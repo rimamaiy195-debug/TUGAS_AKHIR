@@ -100,8 +100,7 @@ body {
     <div class="content">
       <h1>Selamat Datang<br>di Rafting Singorojo</h1>
       <p>
-        Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-        Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.
+        Rasakan keseruan arung jeram di tengah keindahan alam Singorojo. Menawarkan pengalaman petualangan yang aman, seru, dan tak terlupakan untuk semua kalangan. Ayo berpetualang bersama kami!
       </p>
     </div>
 
