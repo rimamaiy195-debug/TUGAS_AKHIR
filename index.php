@@ -24,6 +24,7 @@ body {
   align-items: center;
   padding: 50px;
   color: white;
+  box-sizing: border-box;
 }
 
 .content h1 {
