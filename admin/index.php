@@ -34,10 +34,15 @@ include 'header.php';
          }
 
         .hero-text {
-            color: white;
-            font-size: 22px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
-            line-height: 1.5;
+             color: #ffffff; /* Putih murni */
+             font-size: 18px; /* Sedikit diperbesar */
+             font-weight: bold; /* Lebih tebal */
+             text-shadow: 2px 2px 8px rgba(0,0,0,1); /* Bayangan tebal biar kelihatan jelas */
+             line-height: 1.6;
+             position: relative;
+             z-index: 2;
+             margin-left: 20px;
+             margin-top: -80px; /* Geser ke atas lagi */
         }
 
         .btn {
@@ -60,7 +65,10 @@ include 'header.php';
             <p>Kawasan Wisata Bodri Rafting. Desa Singorojo, <br>Kecamatan Singorojo (51382),<br>
             Kendal, Jawa Tengah, Indonesia. Contact:<br>
             0831-0204-8865.</p>
+
+            <a href="profile.php">
             <button class="btn">Baca lebih tentang ini</button>
+
         </div>
     </section>
 
