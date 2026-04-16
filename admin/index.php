@@ -1,109 +1,70 @@
+<?php
+include '../koneksi.php';
+include 'header.php'; 
+ ?>
+
 <!DOCTYPE html>
-<html lang="id">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rafting Singorojo</title>
-    
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Rafting Singorojo</title>
 
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 50px;
-            background-color: rgba(255, 255, 255, 0.8);
-            position: absolute;
-            width: 100%;
-            top: 0;
-            z-index: 999;
-        }
-
-        .logo h2 {
-            color: #333;
-            line-height: 1.2;
-        }
-
-        .nav-links {
-            display: flex;
-            list-style: none;
-        }
-
-        .nav-links li {
-            margin: 0 15px;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: #333;
-            font-size: 18px;
-        }
-
-        .hero {
-            background-image: url('images/6.jpg'); 
+	<style>
+		.hero {
+            background-image: url('../images/6.jpg'); 
             background-size: cover;
             background-position: center;
-            height: 100vh;
+            height: 85vh;
             display: flex;
-            align-items: flex-end;
+            align-items: center;
+            justify-content: flex-start;
             padding: 50px;
+            position: relative;
         }
+        .hero::before {
+             content: "";
+             position: absolute;
+             top: 0;
+             left: 0;
+             width: 100%;
+             height: 100%;
+             background-color: rgba(0, 0, 0, 0.3); 
+             z-index: 1;
+         }
 
         .hero-text {
             color: white;
-            font-size: 20px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            font-size: 22px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+            line-height: 1.5;
         }
 
         .btn {
-            margin-top: 20px;
-            padding: 10px 25px;
+            margin-top: 25px;
+            padding: 12px 30px;
             background-color: rgba(255,255,255,0.3);
             color: white;
             border: 1px solid white;
             border-radius: 25px;
-            font-size: 16px;
+            font-size: 18px;
             cursor: pointer;
+            text-shadow: none;
         }
-
-        .btn:hover {
-            background-color: white;
-            color: #333;
-        }
-    </style>
-
+	</style>
 </head>
 <body>
 
-    <!-- NAVBAR -->
-    <nav class="navbar">
-        <div class="logo">
-            <h2>Rafting<br>Singorojo</h2>
-        </div>
-        <ul class="nav-links">
-            <li><a href="#">Home</a></li>
-            <li><a href="#">Profile</a></li>
-            <li><a href="#">Galeri</a></li>
-            <li><a href="#">Paket</a></li>
-            <li><a href="#">Booking</a></li>
-            <li><a href="#">Contact</a></li>
-        </ul>
-    </nav>
-
-    <!-- BANNER / ISI KONTEN -->
     <section class="hero">
         <div class="hero-text">
-            <p>Kawasan Wisata Bodri Rafting. Desa Singorojo, Kecamatan Singorojo (51382),<br>
-            Kendal, Jawa Tengah, Indonesia. Contact: 0831-0204-8865.</p>
+            <p>Kawasan Wisata Bodri Rafting. Desa Singorojo, <br>Kecamatan Singorojo (51382),<br>
+            Kendal, Jawa Tengah, Indonesia. Contact:<br>
+            0831-0204-8865.</p>
             <button class="btn">Baca lebih tentang ini</button>
         </div>
     </section>
+
+</div>
 
 </body>
 </html>
