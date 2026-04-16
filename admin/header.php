@@ -26,7 +26,6 @@
             box-shadow: none;
         }
 
-        /* NAVBAR */
         .navbar {
             display: flex;
             justify-content: space-between;
@@ -107,7 +106,7 @@
             <h2>Rafting<br>Singorojo</h2>
         </div>
         <ul class="nav-menu">
-            <li><a href="home.php" class="active">Home</a></li>
+            <li><a href="index.php" class="active">Home</a></li>
             <li><a href="profile.php">Pofile</a></li> 
             <li><a href="galeri.php">Galeri</a></li>
             <li><a href="paket.php">Paket</a></li>
