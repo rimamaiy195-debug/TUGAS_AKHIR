@@ -141,6 +141,15 @@ include 'header.php'
     <p>
       Aktivitas ini sebagai <a href="#">olahraga petualangan</a> telah menjadi populer sejak tahun 1950-an, atau bahkan lebih awal, berkembang dari individu yang mendayung rakit sepanjang 3 meter (9,8 kaki) hingga 4,3 meter (14 kaki) dengan <a href="#">dayung</a> ganda atau kayuh menjadi rakit multi-orang yang digerakkan oleh dayung tunggal dan dikemudikan oleh seseorang di buritan, atau dengan menggunakan <a href="#">kayuh</a>.
     </p>
+    <p>
+      Tubing dan Rafting di Sungai Bodri Desa Singorojo. Singorojo, salah satu desa yang terletak di wilayah kecamatan singorojo kabupaten kendal dimana wilayahnya berada di sebelah selatan Kabupaten Kendal, desa tersebut berbatasan di sebelah Utara dengan Kecamatan Kaliwungu Selatan dan Kecamatan Ampel, Sebelah Timur berbatasan dengan desa Cacaban dan desa Kalirejo, sedangkan sebelah selatan dengan Desa Banyuringin dan Kabupaten Temanggung serta sebelah barat dengan kecamatan Patean.
+    </p>
+    <p>
+       Wilayah Singorojo diberikan alam yang indah serta air yg melimpah namun karena penambangan liar dan exploitasi sungai berlebihan mengakibatkan sungai yang tadinya indah menjadi pendangkalan serta ikan endemik wader ikon desa berkurang. Melihat hal demikian pemuda Singorojo prihatin membuat sebuah organisasi Pokdarwis yg di ketuai Nuris Nur Sahid bersama pemuda Karang Taruna “Samudra” serta masyarakat memanfaatkan sungai yang awalnya di tambang batunya di jadikan wahana wisata extrem yaitu " Tubing & Rafting" untuk meningkatkan perekonomian masyarakat sekitar serta menjaga ekosistem sungai.
+    </p>
+    <p>
+        RUTE : Lokasi Lembah Singorojo ini berada di antara perkebunan Karet persil serta perkebunan Plantera Fruit berjarak sekitar 38 Kilometer dari kota Semarang. Jika anda dari arah Boja, maka arahkan kendaraan anda menuju arah barat langsung menuju desa Singorojo, di desa itu nanti akan banyak terdapat papan penunjuk arah menuju sungai untuk tubing dan rafting, atau jika anda akan reservasi untuk grup atau komunitas yang ingin menikmati segarnya petualangan tubing dan rafting silahkan hubungi Tomi Tubing Singorojo di 0831-0204-8865
+    </p>
 
     <div class="rating-card">
       <div class="biz">Rafting Singorojo</div>
