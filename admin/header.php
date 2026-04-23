@@ -1,126 +1,101 @@
+<?php
+session_start();
+
+if($_SESSION['akses'] != "1"){
+    header("location:../login.php");
+    exit();
+}
+
+$current_page = basename($_SERVER['PHP_SELF']);
+?>
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rafting Singorojo</title>
-    
-    
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rafting Singorojo</title>
 
-        body {
-            background-color: #f0f0f0;
-            padding: 0;
-        }
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-        .container {
-            background-color: white;
-            border-radius: 0;
-            overflow: hidden;
-            box-shadow: none;
-        }
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
 
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 30px;
-            background-color: #ffffff;
-            width: 100%;
-        }
+body {
+    background-color: #f0f0f0;
+}
 
-        .logo h2 {
-            color: #333;
-            line-height: 1.2;
-            font-weight: normal;
-        }
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    background-color: #ffffff;
+}
 
-        .nav-menu {
-            display: flex;
-            list-style: none;
-            align-items: center;
-            gap: 25px;
-        }
+.logo h2 {
+    color: #333;
+    line-height: 1.2;
+    font-weight: normal;
+}
 
-        .nav-menu li a {
-            text-decoration: none;
-            color: #333;
-            font-size: 18px;
-        }
+.nav-menu {
+    display: flex;
+    list-style: none;
+    align-items: center;
+    gap: 25px;
+}
 
-        .nav-menu li a.active {
-            color: #d4a373; 
-        }
+.nav-menu li a {
+    text-decoration: none;
+    color: #333;
+    font-size: 18px;
+    padding-bottom: 5px;
+}
 
-        .search-box {
-            display: flex;
-            align-items: center;
-            background-color: #e9e9e9;
-            border-radius: 25px;
-            padding: 8px 15px;
-        }
+.nav-menu li a.active {
+    color: #d4a373;
+    border-bottom: 2px solid #d4a373;
+}
 
-        .search-box i {
-            color: #888;
-            margin-right: 8px;
-        }
+.search-box {
+    display: flex;
+    align-items: center;
+    background-color: #e9e9e9;
+    border-radius: 25px;
+    padding: 8px 15px;
+}
 
-        .search-box input {
-            border: none;
-            background: transparent;
-            outline: none;
-            font-size: 16px;
-            color: #333;
-        }
-
-        .search-box input::placeholder {
-            color: #888;
-        }
-
-        
-    </style>
-
+.search-box input {
+    border: none;
+    background: transparent;
+    outline: none;
+}
+</style>
 </head>
+
 <body>
 
-    <?php
-        session_start();
+<nav class="navbar">
+    <div class="logo">
+        <h2>Rafting<br>Singorojo</h2>
+    </div>
 
-        if($_SESSION['akses'] != "1"){
-           header("location:../login.php");
-           exit();
-        }
+    <ul class="nav-menu">
+        <li><a href="index.php" class="<?= ($current_page == 'index.php') ? 'active' : '' ?>">Home</a></li>
+        <li><a href="profile.php" class="<?= ($current_page == 'profile.php') ? 'active' : '' ?>">Profile</a></li>
+        <li><a href="galeri.php" class="<?= ($current_page == 'galeri.php') ? 'active' : '' ?>">Galeri</a></li>
+        <li><a href="paket.php" class="<?= ($current_page == 'paket.php') ? 'active' : '' ?>">Paket</a></li>
+        <li><a href="booking.php" class="<?= ($current_page == 'booking.php') ? 'active' : '' ?>">Booking</a></li>
+        <li><a href="contact.php" class="<?= ($current_page == 'contact.php') ? 'active' : '' ?>">Contact</a></li>
 
-    ?>
-
-<div class="container">
-
-    <nav class="navbar">
-        <div class="logo">
-            <h2>Rafting<br>Singorojo</h2>
-        </div>
-        <ul class="nav-menu">
-            <li><a href="index.php" class="active">Home</a></li>
-            <li><a href="profile.php">Pofile</a></li> 
-            <li><a href="galeri.php">Galeri</a></li>
-            <li><a href="paket.php">Paket</a></li>
-            <li><a href="booking.php">Booking</a></li>
-            <li><a href="contact.php">Contact</a></li>
-            
-            <li class="search-box">
-                <i class="fa fa-search"></i>
-                <input type="text" placeholder="Cari">
-            </li>
-        </ul>
-    </nav>
-
-</div>
-
-</body>
-</html>
+        <li class="search-box">
+            <input type="text" placeholder="Cari">
+        </li>
+    </ul>
+</nav>
