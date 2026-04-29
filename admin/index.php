@@ -34,15 +34,15 @@ include 'header.php';
          }
 
         .hero-text {
-             color: #ffffff; /* Putih murni */
-             font-size: 18px; /* Sedikit diperbesar */
-             font-weight: bold; /* Lebih tebal */
-             text-shadow: 2px 2px 8px rgba(0,0,0,1); /* Bayangan tebal biar kelihatan jelas */
+             color: #ffffff;
+             font-size: 18px; 
+             font-weight: bold; 
+             text-shadow: 2px 2px 8px rgba(0,0,0,1); 
              line-height: 1.6;
              position: relative;
              z-index: 2;
              margin-left: 20px;
-             margin-top: -80px; /* Geser ke atas lagi */
+             margin-top: -80px; 
         }
 
         .btn {
