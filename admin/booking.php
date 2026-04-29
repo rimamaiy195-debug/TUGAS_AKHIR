@@ -1,263 +1,284 @@
 <?php
-include '../koneksi.php';
-include 'header.php';
+	include '../koneksi.php';
+	include 'header.php';
 
-$paket = $_GET['paket'] ?? 'Fun Rafting';
-$harga = $_GET['harga'] ?? 135000;
-
-if(isset($_POST['submit'])) {
-
-	$jumlah  = $_POST['jumlah'];
-	$tanggal = $_POST['tanggal'];
-	$jam     = $_POST['jam'];
-	$no_hp   = $_POST['no_hp'];
-
-	$total = $harga * $jumlah;
-
-	mysqli_query($koneksi, "INSERT INTO booking 
-	(paket, harga, jumlah, tanggal, jam, no_hp, total) 
-	VALUES 
-	('$paket','$harga','$jumlah','$tanggal','$jam','$no_hp','$total')");
-
-	header("Location: konfirmasi.php?paket=$paket&total=$total");
-	exit();
-}
+	// Ambil data dari URL (yang dikirim dari halaman paket)
+	$nama_paket = isset($_GET['paket']) ? $_GET['paket'] : 'Paket Tidak Diketahui';
+	$harga_satuan = isset($_GET['harga']) ? $_GET['harga'] : 0;
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
-<title>Booking</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Booking - Rafting Singorojo</title>
+	<style>
+		body {
+			background-color: #f0eada;
+			font-family: Arial, sans-serif;
+			margin: 0;
+		}
 
-<style>
-body {
-	background: #f0eada;
-	font-family: Arial;
-}
+		.wrapper {
+			max-width: 1200px;
+			margin: 20px auto;
+			padding: 0 20px;
+		}
 
-.wrapper {
-	max-width: 1200px;
-	margin: auto;
-	padding: 20px;
-}
+		.container {
+			display: flex;
+			gap: 25px;
+			align-items: flex-start;
+		}
 
-/* CONTAINER */
-.container {
-	display: flex;
-	gap: 20px;
-}
+		/* --- BAGIAN KIRI: INFO PAKET --- */
+		.left-info {
+			flex: 2;
+			background: white;
+			border-radius: 15px;
+			padding: 20px;
+			box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+		}
 
-/* KIRI */
-.left {
-	flex: 2;
-	background: white;
-	padding: 20px;
-	border-radius: 10px;
-}
+		.paket-header {
+			background: #2daae1;
+			color: white;
+			padding: 15px;
+			border-radius: 10px;
+			font-size: 22px;
+			font-weight: bold;
+			text-align: center;
+			margin-bottom: 15px;
+		}
 
-.header-paket {
-	background: #2daae1;
-	color: white;
-	padding: 10px;
-	font-weight: bold;
-	border-radius: 5px;
-	margin-bottom: 10px;
-}
+		.gambar-paket {
+			width: 100%;
+			border-radius: 10px;
+			margin-bottom: 15px;
+		}
 
-.img-main img {
-	width: 100%;
-	border-radius: 5px;
-}
+		.detail-box {
+			display: flex;
+			gap: 15px;
+			margin-bottom: 20px;
+		}
 
-.info-box {
-	display: flex;
-	gap: 10px;
-	margin: 10px 0;
-}
+		.box-kecil {
+			flex: 1;
+			background: #f9f9f9;
+			padding: 15px;
+			border-radius: 8px;
+			text-align: center;
+			font-weight: bold;
+			border: 1px solid #ddd;
+		}
 
-.box {
-	background: #f3f3f3;
-	padding: 10px;
-	border-radius: 5px;
-	text-align: center;
-	flex: 1;
-}
+		.deskripsi {
+			text-align: justify;
+			line-height: 1.6;
+			color: #444;
+		}
 
-.desc {
-	font-size: 14px;
-	line-height: 1.6;
-	text-align: justify;
-}
+		/* --- BAGIAN KANAN: FORM PESANAN --- */
+		.right-form {
+			flex: 1;
+			background: white;
+			border-radius: 15px;
+			padding: 20px;
+			box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+		}
 
-/* KANAN */
-.right {
-	flex: 1;
-	background: white;
-	padding: 15px;
-	border-radius: 10px;
-}
+		.right-form h3 {
+			text-align: center;
+			margin-top: 0;
+			color: #333;
+			border-bottom: 2px solid #ddd;
+			padding-bottom: 10px;
+		}
 
-.right img {
-	width: 100%;
-	border-radius: 5px;
-	margin-bottom: 10px;
-}
+		.gambar-preview {
+			width: 100%;
+			border: 2px dashed #ccc;
+			border-radius: 8px;
+			margin-bottom: 20px;
+		}
 
-.form-group {
-	display: flex;
-	justify-content: space-between;
-	margin-bottom: 10px;
-	font-size: 14px;
-}
+		.form-group {
+			margin-bottom: 12px;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
 
-.form-group input {
-	border: none;
-	border-bottom: 1px solid #ccc;
-	text-align: right;
-}
+		.form-group label {
+			font-weight: bold;
+			color: #555;
+		}
 
-.qty {
-	display: flex;
-	gap: 5px;
-}
+		.form-group input,
+		.form-group select {
+			padding: 6px 10px;
+			border: 1px solid #ccc;
+			border-radius: 5px;
+			width: 150px;
+		}
 
-.qty button {
-	width: 25px;
-	cursor: pointer;
-}
+		.jumlah-control {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+		}
 
-.total {
-	display: flex;
-	justify-content: space-between;
-	margin-top: 15px;
-	font-weight: bold;
-}
+		.jumlah-control button {
+			width: 25px;
+			height: 25px;
+			cursor: pointer;
+			background: #eee;
+			border: 1px solid #ccc;
+			border-radius: 3px;
+		}
 
-.btn {
-	width: 100%;
-	background: green;
-	color: white;
-	padding: 10px;
-	border: none;
-	margin-top: 10px;
-	border-radius: 20px;
-	cursor: pointer;
-}
-</style>
+		.total-harga {
+			background: #f0f0f0;
+			padding: 10px;
+			border-radius: 8px;
+			font-size: 18px;
+			font-weight: bold;
+			text-align: right;
+			margin: 15px 0;
+		}
 
+		.btn-booking {
+			width: 100%;
+			padding: 12px;
+			background: #28a745;
+			color: white;
+			border: none;
+			border-radius: 8px;
+			font-size: 16px;
+			font-weight: bold;
+			cursor: pointer;
+		}
+	</style>
 </head>
 <body>
 
+
 <div class="wrapper">
+	<div class="container">
 
-<div class="container">
+		<!-- BAGIAN KIRI: INFO PAKET -->
+		<div class="left-info">
+			<div class="paket-header">PAKET <?php echo strtoupper($nama_paket); ?></div>
+			
+			<img src="../images/30.jpg" alt="Rafting" class="gambar-paket">
 
-<!-- KIRI -->
-<div class="left">
+			<div class="detail-box">
+				<div class="box-kecil">
+					<?php 
+						echo number_format($harga_satuan, 0, ',', '.') . " Ribu /pax"; 
+					?>
+				</div>
+				<div class="box-kecil">
+					<?php 
+						if($nama_paket == "Fun Rafting") echo "Jarak 4 KM (~1-1,5 jam)";
+						else if($nama_paket == "Medium") echo "Jarak 12 KM (~2,5-3 jam)";
+						else if($nama_paket == "Long Trip") echo "Jarak 15 KM (~3-3,5 jam)";
+						else echo "Jarak Tidak Diketahui";
+					?>
+				</div>
+			</div>
 
-	<div class="header-paket">
-		PAKET <?= strtoupper($paket); ?>
-	</div>
-
-	<div class="img-main">
-		<img src="../images/1.jpg">
-	</div>
-
-	<div class="info-box">
-		<div class="box">Rp <?= number_format($harga); ?><br>/pax</div>
-		<div class="box">Jarak 4 KM<br>(±1-1.5 jam)</div>
-	</div>
-
-	<div class="desc">
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-		Nikmati pengalaman rafting seru bersama tim profesional 
-		dengan keamanan dan fasilitas terbaik.
-	</div>
-
-</div>
-
-<!-- KANAN -->
-<div class="right">
-
-<form method="POST">
-
-	<img src="../images/1.jpg">
-
-	<div class="form-group">
-		<span>Paket</span>
-		<span><?= $paket ?></span>
-	</div>
-
-	<div class="form-group">
-		<span>Tanggal</span>
-		<input type="date" name="tanggal" required>
-	</div>
-
-	<div class="form-group">
-		<span>Jam</span>
-		<input type="time" name="jam" required>
-	</div>
-
-	<div class="form-group">
-		<span>Orang</span>
-		<div class="qty">
-			<button type="button" onclick="kurang()">-</button>
-			<input type="text" id="jumlah" name="jumlah" value="2">
-			<button type="button" onclick="tambah()">+</button>
+			<div class="deskripsi">
+				<p>Menikmati serunya arung jeram di sungai Bodri dengan pemandangan alam yang asri dan menantang adrenalin. Cocok untuk liburan keluarga, gathering kantor, atau sekolah.</p>
+				<p>Fasilitas lengkap termasuk peralatan safety, guide berpengalaman, makan siang, dan dokumentasi.</p>
+			</div>
 		</div>
+
+		<!-- BAGIAN KANAN: FORM PEMESANAN -->
+		<div class="right-form">
+			<h3>FORM PEMESANAN</h3>
+			
+			<img src="../images/12.jpg" alt="Preview" class="gambar-preview">
+
+			<form method="POST" action="proses_booking.php">
+				
+				<input type="hidden" name="harga_satuan" value="<?php echo $harga_satuan; ?>">
+				<input type="hidden" name="nama_paket" value="<?php echo $nama_paket; ?>">
+
+				<div class="form-group">
+					<label>Paket</label>
+					<span><strong><?php echo $nama_paket; ?></strong></span>
+				</div>
+
+				<div class="form-group">
+					<label>Tanggal</label>
+					<input type="date" name="tanggal" required>
+				</div>
+
+				<div class="form-group">
+					<label>Jam</label>
+					<select name="jam" required>
+						<option value="">-- Pilih Jam --</option>
+						<option value="08:00">08:00</option>
+						<option value="10:00">10:00</option>
+						<option value="13:00">13:00</option>
+					</select>
+				</div>
+
+				<div class="form-group">
+					<label>Jumlah Orang</label>
+					<div class="jumlah-control">
+						<button type="button" onclick="kurang()">-</button>
+						<input type="number" id="jumlah" name="jumlah_orang" value="2" min="1" readonly>
+						<button type="button" onclick="tambah()">+</button>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label>No. Telepon</label>
+					<input type="text" name="telepon" placeholder="08xx..." required>
+				</div>
+
+				<div class="total-harga">
+					Total: Rp <span id="total"><?php echo number_format($harga_satuan * 2, 0, ',', '.'); ?></span>
+				</div>
+
+				<button type="submit" class="btn-booking">BOOKING SEKARANG</button>
+
+			</form>
+		</div>
+
 	</div>
-
-	<div class="form-group">
-		<span>No HP</span>
-		<input type="text" name="no_hp" required>
-	</div>
-
-	<div class="form-group">
-		<span>Harga</span>
-		<span>Rp <?= number_format($harga); ?></span>
-	</div>
-
-	<div class="form-group">
-		<span>Jumlah</span>
-		<span id="jumlahText">2</span>
-	</div>
-
-	<div class="total">
-		<span>TOTAL</span>
-		<span id="total">Rp <?= number_format($harga * 2); ?></span>
-	</div>
-
-	<button class="btn" name="submit">BOOKING</button>
-
-</form>
-
-</div>
-
-</div>
 </div>
 
 <script>
-let harga = <?= $harga ?>;
-let jumlah = 2;
+	let harga = <?php echo $harga_satuan; ?>;
 
-function update() {
-	document.getElementById('jumlah').value = jumlah;
-	document.getElementById('jumlahText').innerText = jumlah;
-	document.getElementById('total').innerText =
-		'Rp ' + (harga * jumlah).toLocaleString();
-}
-
-function tambah() {
-	jumlah++;
-	update();
-}
-
-function kurang() {
-	if(jumlah > 1){
-		jumlah--;
-		update();
+	function tambah() {
+		let jml = document.getElementById('jumlah');
+		jml.value = parseInt(jml.value) + 1;
+		hitungTotal();
 	}
-}
+
+	function kurang() {
+		let jml = document.getElementById('jumlah');
+		if(parseInt(jml.value) > 1) {
+			jml.value = parseInt(jml.value) - 1;
+			hitungTotal();
+		}
+	}
+
+	function hitungTotal() {
+		let jml = document.getElementById('jumlah').value;
+		let total = harga * jml;
+		document.getElementById('total').innerText = formatRupiah(total);
+	}
+
+	function formatRupiah(angka) {
+		return angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+	}
 </script>
 
 </body>
