@@ -127,6 +127,30 @@ include 'header.php'
       }
       .photo { height: 90px; font-size: 24px; }
     }
+
+      .wa-float {
+          position: fixed;
+          bottom: 20px;
+          right: 20px;
+          background: #25D366;
+          color: white;
+          width: 55px;
+          height: 55px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 24px;
+          text-decoration: none;
+          box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+          z-index: 999;
+          transition: 0.3s;
+        }
+
+        .wa-float:hover {
+          transform: scale(1.1);
+          background: #1ebe5d;
+        }
   </style>
 </head>
 <body>
@@ -172,6 +196,10 @@ include 'header.php'
     </div>
   </div>
 </div>
+
+    <a href="https://wa.me/6283102048865" target="_blank" class="wa-float">
+    <i class="fab fa-whatsapp"></i>
+  </a>
 
 </body>
 </html>

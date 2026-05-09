@@ -28,7 +28,6 @@
 			gap: 20px;
 		}
 
-		/* KIRI */
 		.left-section {
 			flex: 2;
 			background: white;
@@ -85,7 +84,6 @@
 			margin-bottom: 5px;
 		}
 
-		/* KANAN */
 		.right-section {
 			flex: 1;
 			display: flex;
@@ -141,6 +139,31 @@
 			cursor: pointer;
 			margin-left: auto;
 		}
+
+		.wa-float {
+	      position: fixed;
+	      bottom: 20px;
+	      right: 20px;
+	      background: #25D366;
+	      color: white;
+	      width: 55px;
+	      height: 55px;
+	      border-radius: 50%;
+	      display: flex;
+	      align-items: center;
+	      justify-content: center;
+	      font-size: 24px;
+	      text-decoration: none;
+	      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+	      z-index: 999;
+	      transition: 0.3s;
+	    }
+
+    .wa-float:hover {
+      transform: scale(1.1);
+      background: #1ebe5d;
+    }
+
 	</style>
 </head>
 
@@ -167,7 +190,7 @@
 
 					<div class="item">
 						<p>☑ Outbound</p>
-						<img src="../images/3.jpg">
+						<img src="../images/outbound.jpg">
 					</div>
 
 					<div class="item">
@@ -177,7 +200,7 @@
 
 					<div class="item">
 						<p>☑ Jeep wisata</p>
-						<img src="../images/5.jpg">
+						<img src="../images/jeep.jpg">
 					</div>
 				</div>
 
@@ -255,6 +278,10 @@
 				"&harga=" + paketDipilih.harga;
 		}
 	</script>
+
+	<a href="https://wa.me/6283102048865" target="_blank" class="wa-float">
+    <i class="fab fa-whatsapp"></i>
+  </a>
 
 </body>
 </html>
