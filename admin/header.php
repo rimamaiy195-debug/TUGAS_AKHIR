@@ -19,6 +19,16 @@ $current_page = basename($_SERVER['PHP_SELF']);
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
+/* override dari header.php */
+body {
+  background-color: #f1f5f9 !important;
+  padding: 0 !important;
+}
+
+.main-content {
+  padding: 32px 48px;
+}
+    
 * {
     margin: 0;
     padding: 0;
