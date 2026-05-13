@@ -218,6 +218,14 @@ include 'header.php';
 	      <div class="img-placeholder"><img src="../images/20.jpg"></div>
 	      <div class="tag">Arung Jeram</div>
 	    </div>
+	    <div class="card">
+	      <div class="img-placeholder"><img src="../images/37.JPG"></div>
+	      <div class="tag">Arung Jeram</div>
+	    </div>
+	    <div class="card">
+	      <div class="img-placeholder"><img src="../images/50.jpg"></div>
+	      <div class="tag">Arung Jeram</div>
+	    </div>
 
 	  </div>
 	</div>
