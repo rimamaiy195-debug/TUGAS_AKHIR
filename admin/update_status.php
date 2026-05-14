@@ -4,7 +4,6 @@ include '../koneksi.php';
 $id     = (int)$_POST['id_booking'];
 $status = (int)$_POST['status'];
 
-// validasi: hanya 0,1,2,3 yang diizinkan
 if (!in_array($status, [0, 1, 2, 3])) {
     http_response_code(400);
     echo 'Status tidak valid';

@@ -2,7 +2,6 @@
 include '../koneksi.php';
 include 'header.php';
 
-// 0=pending, 1=confirmed, 2=done, 3=cancelled
 $query = mysqli_query($koneksi, "
     SELECT 
         b.id_booking,
@@ -30,149 +29,144 @@ while ($row = mysqli_fetch_assoc($query)) {
     ];
 }
 ?>
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Admin Booking – Rafting Singorojo</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet"/>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    body {
-	  font-family: 'Poppins', sans-serif;
-	  background: #f1f5f9;
-	  color: #1e293b;
-	  min-height: 100vh;
-	  padding: 90px 32px 32px; /* tambah padding kiri kanan */
-	}
+<style>
+  /* reset yang bentrok dari header.php */
+  body {
+    background-color: #f1f5f9 !important;
+    font-family: 'Poppins', sans-serif !important;
+  }
 
-	.page-header {
-	  display: flex; align-items: flex-start;
-	  justify-content: space-between;
-	  margin-bottom: 28px;
-	  margin-top: 24px; /* kasih jarak dari navbar */
-	}
-    .page-header h1 { font-size: 1.5rem; font-weight: 700; }
-    .page-header p  { font-size: .8rem; color: #64748b; margin-top: 3px; }
+  .main-content {
+    padding: 32px 48px;
+  }
 
-    /* ── Stats ── */
-    .stats {
-      display: grid; grid-template-columns: repeat(3, 1fr);
-      gap: 16px; margin-bottom: 24px;
-    }
-    .stat-card {
-      background: #fff; border-radius: 14px;
-      padding: 20px 22px;
-      display: flex; align-items: center; gap: 16px;
-      box-shadow: 0 1px 4px rgba(0,0,0,.06);
-    }
-    .stat-icon {
-      width: 50px; height: 50px; border-radius: 12px;
-      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-    }
-    .stat-icon svg { width: 24px; height: 24px; fill: #fff; }
-    .stat-icon.blue  { background: #0d4f6c; }
-    .stat-icon.amber { background: #f59e0b; }
-    .stat-icon.green { background: #10b981; }
-    .stat-num { font-size: 1.7rem; font-weight: 700; line-height: 1; }
-    .stat-lbl { font-size: .75rem; color: #64748b; margin-top: 4px; font-weight: 500; }
+  /* ── Page header ── */
+  .page-header {
+    display: flex; align-items: flex-start;
+    justify-content: space-between; margin-bottom: 28px;
+  }
+  .page-header h1 { font-size: 1.5rem; font-weight: 700; color: #1e293b; }
+  .page-header p  { font-size: .8rem; color: #64748b; margin-top: 3px; }
 
-    /* ── Filter bar ── */
-    .filter-bar {
-      display: flex; gap: 8px; flex-wrap: wrap;
-      align-items: center; margin-bottom: 18px;
-    }
-    .filter-btn {
-      padding: 7px 18px; border-radius: 20px;
-      border: 1.5px solid #cbd5e1; background: #fff;
-      font-family: 'Poppins', sans-serif; font-size: .8rem; font-weight: 600;
-      color: #64748b; cursor: pointer; transition: all .2s;
-    }
-    .filter-btn:hover  { border-color: #0d4f6c; color: #0d4f6c; }
-    .filter-btn.active { background: #0d4f6c; color: #fff; border-color: #0d4f6c; }
+  /* ── Stats ── */
+  .stats {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 16px; margin-bottom: 24px;
+  }
+  .stat-card {
+    background: #fff; border-radius: 14px;
+    padding: 20px 22px;
+    display: flex; align-items: center; gap: 16px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.06);
+  }
+  .stat-icon {
+    width: 50px; height: 50px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .stat-icon svg { width: 24px; height: 24px; fill: #fff; }
+  .stat-icon.blue  { background: #0d4f6c; }
+  .stat-icon.amber { background: #f59e0b; }
+  .stat-icon.green { background: #10b981; }
+  .stat-num { font-size: 1.7rem; font-weight: 700; line-height: 1; color: #1e293b; }
+  .stat-lbl { font-size: .75rem; color: #64748b; margin-top: 4px; font-weight: 500; }
 
-    .search-wrap { position: relative; margin-left: auto; }
-    .search-wrap svg {
-      position: absolute; left: 11px; top: 50%; transform: translateY(-50%);
-      width: 15px; height: 15px; fill: #94a3b8;
-    }
-    .search-wrap input {
-      padding: 8px 14px 8px 34px; border-radius: 20px;
-      border: 1.5px solid #cbd5e1;
-      font-family: 'Poppins', sans-serif; font-size: .8rem; outline: none; width: 200px;
-      transition: border-color .2s;
-    }
-    .search-wrap input:focus { border-color: #0d4f6c; }
+  /* ── Filter bar ── */
+  .filter-bar {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    align-items: center; margin-bottom: 18px;
+  }
+  .filter-btn {
+    padding: 7px 18px; border-radius: 20px;
+    border: 1.5px solid #cbd5e1; background: #fff;
+    font-family: 'Poppins', sans-serif; font-size: .8rem; font-weight: 600;
+    color: #64748b; cursor: pointer; transition: all .2s;
+  }
+  .filter-btn:hover  { border-color: #0d4f6c; color: #0d4f6c; }
+  .filter-btn.active { background: #0d4f6c; color: #fff; border-color: #0d4f6c; }
 
-    /* ── Table ── */
-    .table-wrap {
-      background: #fff; border-radius: 14px;
-      box-shadow: 0 1px 4px rgba(0,0,0,.06); overflow: hidden;
-    }
-    table { width: 100%; border-collapse: collapse; }
-    thead { background: #f8fafc; }
-    th {
-      padding: 13px 18px; text-align: left;
-      font-size: .7rem; font-weight: 700;
-      letter-spacing: .8px; text-transform: uppercase;
-      color: #94a3b8; border-bottom: 1px solid #e2e8f0;
-    }
-    td {
-      padding: 14px 18px; font-size: .83rem;
-      border-bottom: 1px solid #f1f5f9; vertical-align: middle;
-    }
-    tr:last-child td { border-bottom: none; }
-    tr:hover td { background: #fafcff; }
-    .nama-text { font-weight: 600; }
-    .hp-text   { font-size: .76rem; color: #64748b; }
+  .search-wrap { position: relative; margin-left: auto; }
+  .search-wrap svg {
+    position: absolute; left: 11px; top: 50%; transform: translateY(-50%);
+    width: 15px; height: 15px; fill: #94a3b8;
+  }
+  .search-wrap input {
+    padding: 8px 14px 8px 34px; border-radius: 20px;
+    border: 1.5px solid #cbd5e1;
+    font-family: 'Poppins', sans-serif; font-size: .8rem; outline: none; width: 200px;
+    background: #fff; transition: border-color .2s;
+  }
+  .search-wrap input:focus { border-color: #0d4f6c; }
 
-    /* ── Badge ── */
-    .badge {
-      display: inline-block; padding: 4px 12px;
-      border-radius: 20px; font-size: .7rem; font-weight: 700;
-    }
-    .badge-0 { background: #fef9c3; color: #a16207; }
-    .badge-1 { background: #d1fae5; color: #065f46; }
-    .badge-2 { background: #e0e7ff; color: #3730a3; }
-    .badge-3 { background: #fee2e2; color: #991b1b; }
+  /* ── Table ── */
+  .table-wrap {
+    background: #fff; border-radius: 14px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.06); overflow: hidden;
+  }
+  table { width: 100%; border-collapse: collapse; }
+  thead { background: #f8fafc; }
+  th {
+    padding: 13px 18px; text-align: left;
+    font-size: .7rem; font-weight: 700;
+    letter-spacing: .8px; text-transform: uppercase;
+    color: #94a3b8; border-bottom: 1px solid #e2e8f0;
+  }
+  td {
+    padding: 14px 18px; font-size: .83rem;
+    border-bottom: 1px solid #f1f5f9; vertical-align: middle;
+    color: #1e293b;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #fafcff; }
+  .nama-text { font-weight: 600; }
+  .hp-text   { font-size: .76rem; color: #64748b; }
 
-    /* ── Action buttons ── */
-    .actions { display: flex; gap: 6px; flex-wrap: wrap; }
-    .btn-act {
-      padding: 5px 12px; border-radius: 6px; border: none;
-      font-family: 'Poppins', sans-serif; font-size: .73rem; font-weight: 600;
-      cursor: pointer; transition: opacity .2s;
-    }
-    .btn-act:hover   { opacity: .8; }
-    .btn-confirm { background: #d1fae5; color: #065f46; }
-    .btn-done    { background: #e0e7ff; color: #3730a3; }
-    .btn-cancel  { background: #fee2e2; color: #991b1b; }
+  /* ── Badge ── */
+  .badge {
+    display: inline-block; padding: 4px 12px;
+    border-radius: 20px; font-size: .7rem; font-weight: 700;
+  }
+  .badge-0 { background: #fef9c3; color: #a16207; }
+  .badge-1 { background: #d1fae5; color: #065f46; }
+  .badge-2 { background: #e0e7ff; color: #3730a3; }
+  .badge-3 { background: #fee2e2; color: #991b1b; }
 
-    .empty-row td {
-      text-align: center; padding: 40px;
-      color: #94a3b8; font-size: .85rem;
-    }
+  /* ── Action buttons ── */
+  .actions { display: flex; gap: 6px; flex-wrap: wrap; }
+  .btn-act {
+    padding: 5px 12px; border-radius: 6px; border: none;
+    font-family: 'Poppins', sans-serif; font-size: .73rem; font-weight: 600;
+    cursor: pointer; transition: opacity .2s;
+  }
+  .btn-act:hover   { opacity: .8; }
+  .btn-confirm { background: #d1fae5; color: #065f46; }
+  .btn-done    { background: #e0e7ff; color: #3730a3; }
+  .btn-cancel  { background: #fee2e2; color: #991b1b; }
 
-    /* ── Toast ── */
-    .toast {
-      position: fixed; bottom: 24px; right: 24px;
-      background: #1e293b; color: #fff;
-      padding: 11px 20px; border-radius: 10px;
-      font-size: .82rem; font-weight: 500;
-      transform: translateY(60px); opacity: 0;
-      transition: all .3s; z-index: 300;
-    }
-    .toast.show { transform: translateY(0); opacity: 1; }
+  .empty-row td {
+    text-align: center; padding: 40px;
+    color: #94a3b8; font-size: .85rem;
+  }
 
-    @media (max-width: 768px) {
-      body  { padding: 16px; }
-      .stats { grid-template-columns: 1fr 1fr; }
-    }
-  </style>
-</head>
-<body>
+  /* ── Toast ── */
+  .toast {
+    position: fixed; bottom: 24px; right: 24px;
+    background: #1e293b; color: #fff;
+    padding: 11px 20px; border-radius: 10px;
+    font-size: .82rem; font-weight: 500;
+    transform: translateY(60px); opacity: 0;
+    transition: all .3s; z-index: 999;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  @media (max-width: 768px) {
+    .main-content { padding: 16px; }
+    .stats { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+
+<!-- KONTEN UTAMA -->
+<div class="main-content">
 
   <!-- HEADER -->
   <div class="page-header">
@@ -243,14 +237,15 @@ while ($row = mysqli_fetch_assoc($query)) {
     </table>
   </div>
 
+</div><!-- end .main-content -->
+
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
 <script>
   let bookings      = <?php echo json_encode($bookings); ?>;
-  let currentFilter = -1; // -1 = semua
+  let currentFilter = -1;
 
-  // 0=Menunggu, 1=Diterima, 2=Selesai, 3=Dibatalkan
   const statusLabel = ['Menunggu', 'Diterima', 'Selesai', 'Dibatalkan'];
 
   function updateStats() {
@@ -280,10 +275,10 @@ while ($row = mysqli_fetch_assoc($query)) {
             <td><span class="badge badge-${b.status}">${statusLabel[b.status] ?? '-'}</span></td>
             <td>
               <div class="actions">
-                ${b.status === 0 ? `<button class="btn-act btn-confirm" onclick="changeStatus(${b.id}, 1)"> Terima</button>` : ''}
-                ${b.status === 1 ? `<button class="btn-act btn-done"    onclick="changeStatus(${b.id}, 2)"> Selesai</button>` : ''}
+                ${b.status === 0 ? `<button class="btn-act btn-confirm" onclick="changeStatus(${b.id}, 1)">✔ Terima</button>` : ''}
+                ${b.status === 1 ? `<button class="btn-act btn-done"    onclick="changeStatus(${b.id}, 2)">🏁 Selesai</button>` : ''}
                 ${b.status !== 3 && b.status !== 2
-                  ? `<button class="btn-act btn-cancel" onclick="changeStatus(${b.id}, 3)"> Batal</button>` : ''}
+                  ? `<button class="btn-act btn-cancel" onclick="changeStatus(${b.id}, 3)">✖ Batal</button>` : ''}
               </div>
             </td>
           </tr>
@@ -324,6 +319,3 @@ while ($row = mysqli_fetch_assoc($query)) {
 
   document.addEventListener('DOMContentLoaded', renderTable);
 </script>
-
-</body>
-</html>
