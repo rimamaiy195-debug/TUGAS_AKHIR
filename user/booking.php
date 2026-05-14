@@ -2,283 +2,437 @@
 	include '../koneksi.php';
 	include 'header.php';
 
-	// Ambil data dari URL (yang dikirim dari halaman paket)
-	$nama_paket = isset($_GET['paket']) ? $_GET['paket'] : 'Paket Tidak Diketahui';
-	$harga_satuan = isset($_GET['harga']) ? $_GET['harga'] : 0;
+	// Ambil data paket dari URL
+	$paket = isset($_GET['paket']) ? $_GET['paket'] : '';
+	$harga = isset($_GET['harga']) ? (int)$_GET['harga'] : 0;
+
+	// Data paket lengkap
+	$data_paket = [
+		'Fun Rafting' => [
+			'jarak'   => 'Jarak 4 km (~+1- 1,5 jam)',
+			'harga'   => 135000,
+			'img'     => '../images/1.jpg',
+			'img2'    => '../images/2.jpg',
+		],
+		'Medium' => [
+			'jarak'   => 'Jarak 12 km (~2,5 - 3 jam)',
+			'harga'   => 175000,
+			'img'     => '../images/1.jpg',
+			'img2'    => '../images/2.jpg',
+		],
+		'Long Trip' => [
+			'jarak'   => 'Jarak 15 km (~3 - 3,5 jam)',
+			'harga'   => 210000,
+			'img'     => '../images/1.jpg',
+			'img2'    => '../images/2.jpg',
+		],
+	];
+
+	$info = isset($data_paket[$paket]) ? $data_paket[$paket] : $data_paket['Fun Rafting'];
+	$harga_final = $info['harga'];
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Booking - Rafting Singorojo</title>
-	<style>
-		body {
-			background-color: #f0eada;
-			font-family: Arial, sans-serif;
-			margin: 0;
-		}
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Booking - Rafting Singorojo</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
-		.wrapper {
-			max-width: 1200px;
-			margin: 20px auto;
-			padding: 0 20px;
-		}
+    body {
+      background-color: #f0eada;
+      font-family: 'Poppins', Arial, sans-serif;
+    }
 
-		.container {
-			display: flex;
-			gap: 25px;
-			align-items: flex-start;
-		}
+    .wrapper {
+      max-width: 1200px;
+      margin: 28px auto;
+      padding: 0 20px;
+    }
 
-		/* --- BAGIAN KIRI: INFO PAKET --- */
-		.left-info {
-			flex: 2;
-			background: white;
-			border-radius: 15px;
-			padding: 20px;
-			box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-		}
+    .container-content {
+      display: flex;
+      gap: 22px;
+      align-items: flex-start;
+    }
 
-		.paket-header {
-			background: #2daae1;
-			color: white;
-			padding: 15px;
-			border-radius: 10px;
-			font-size: 22px;
-			font-weight: bold;
-			text-align: center;
-			margin-bottom: 15px;
-		}
+    /* ===== KIRI ===== */
+    .left-section {
+      flex: 2;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
 
-		.gambar-paket {
-			width: 100%;
-			border-radius: 10px;
-			margin-bottom: 15px;
-		}
+    /* Banner paket */
+    .paket-banner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto auto;
+      gap: 12px;
+    }
 
-		.detail-box {
-			display: flex;
-			gap: 15px;
-			margin-bottom: 20px;
-		}
+    .paket-banner-main {
+      position: relative;
+      border-radius: 12px;
+      overflow: hidden;
+      grid-row: 1 / 3;
+    }
 
-		.box-kecil {
-			flex: 1;
-			background: #f9f9f9;
-			padding: 15px;
-			border-radius: 8px;
-			text-align: center;
-			font-weight: bold;
-			border: 1px solid #ddd;
-		}
+    .paket-banner-main img {
+      width: 100%;
+      height: 260px;
+      object-fit: cover;
+      display: block;
+    }
 
-		.deskripsi {
-			text-align: justify;
-			line-height: 1.6;
-			color: #444;
-		}
+    .paket-label {
+      position: absolute;
+      top: 0; left: 0;
+      background: #2daae1;
+      color: white;
+      font-weight: 700;
+      font-size: 18px;
+      padding: 14px 18px;
+      width: 100%;
+    }
 
-		/* --- BAGIAN KANAN: FORM PESANAN --- */
-		.right-form {
-			flex: 1;
-			background: white;
-			border-radius: 15px;
-			padding: 20px;
-			box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-		}
+    .paket-banner-img2 {
+      border-radius: 12px;
+      overflow: hidden;
+    }
 
-		.right-form h3 {
-			text-align: center;
-			margin-top: 0;
-			color: #333;
-			border-bottom: 2px solid #ddd;
-			padding-bottom: 10px;
-		}
+    .paket-banner-img2 img {
+      width: 100%;
+      height: 130px;
+      object-fit: cover;
+      display: block;
+    }
 
-		.gambar-preview {
-			width: 100%;
-			border: 2px dashed #ccc;
-			border-radius: 8px;
-			margin-bottom: 20px;
-		}
+    .paket-info-boxes {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
 
-		.form-group {
-			margin-bottom: 12px;
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-		}
+    .info-box {
+      background: white;
+      border-radius: 10px;
+      border: 1.5px solid #ddd;
+      text-align: center;
+      padding: 14px 10px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #333;
+      line-height: 1.4;
+    }
 
-		.form-group label {
-			font-weight: bold;
-			color: #555;
-		}
+    /* Deskripsi */
+    .deskripsi-box {
+      background: white;
+      border-radius: 14px;
+      padding: 22px;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+    }
 
-		.form-group input,
-		.form-group select {
-			padding: 6px 10px;
-			border: 1px solid #ccc;
-			border-radius: 5px;
-			width: 150px;
-		}
+    .deskripsi-box p {
+      font-size: 13.5px;
+      color: #555;
+      line-height: 1.7;
+      margin-bottom: 14px;
+      text-align: justify;
+    }
 
-		.jumlah-control {
-			display: flex;
-			align-items: center;
-			gap: 8px;
-		}
+    .deskripsi-box p:last-child { margin-bottom: 0; }
 
-		.jumlah-control button {
-			width: 25px;
-			height: 25px;
-			cursor: pointer;
-			background: #eee;
-			border: 1px solid #ccc;
-			border-radius: 3px;
-		}
+    /* ===== KANAN ===== */
+    .right-section {
+      flex: 1;
+      background: white;
+      border-radius: 14px;
+      padding: 18px;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+    }
 
-		.total-harga {
-			background: #f0f0f0;
-			padding: 10px;
-			border-radius: 8px;
-			font-size: 18px;
-			font-weight: bold;
-			text-align: right;
-			margin: 15px 0;
-		}
+    .form-title {
+      font-weight: 700;
+      font-size: 15px;
+      color: #333;
+      text-align: center;
+      margin-bottom: 14px;
+      letter-spacing: 0.3px;
+    }
 
-		.btn-booking {
-			width: 100%;
-			padding: 12px;
-			background: #28a745;
-			color: white;
-			border: none;
-			border-radius: 8px;
-			font-size: 16px;
-			font-weight: bold;
-			cursor: pointer;
-		}
-	</style>
+    .form-img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-bottom: 16px;
+    }
+
+    /* Tabel form */
+    .form-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 12px;
+    }
+
+    .form-table tr td {
+      padding: 6px 4px;
+      font-size: 13px;
+      color: #444;
+      vertical-align: middle;
+    }
+
+    .form-table tr td:first-child {
+      font-weight: 600;
+      white-space: nowrap;
+      width: 100px;
+    }
+
+    .form-table tr td:nth-child(2) {
+      width: 14px;
+      color: #888;
+    }
+
+    .form-table input[type="date"],
+    .form-table input[type="time"],
+    .form-table input[type="tel"] {
+      border: 1.5px solid #ddd;
+      border-radius: 6px;
+      padding: 5px 8px;
+      font-size: 13px;
+      width: 100%;
+      font-family: 'Poppins', sans-serif;
+      outline: none;
+      transition: border 0.2s;
+    }
+
+    .form-table input:focus {
+      border-color: #2daae1;
+    }
+
+    /* Counter orang */
+    .counter {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .counter button {
+      width: 26px;
+      height: 26px;
+      border-radius: 5px;
+      border: 1.5px solid #ccc;
+      background: #f5f5f5;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      line-height: 1;
+      transition: background 0.2s;
+    }
+
+    .counter button:hover { background: #2daae1; color: white; border-color: #2daae1; }
+
+    .counter span {
+      font-weight: 700;
+      font-size: 15px;
+      min-width: 20px;
+      text-align: center;
+    }
+
+    /* Divider */
+    .divider {
+      border: none;
+      border-top: 1.5px solid #eee;
+      margin: 10px 0;
+    }
+
+    /* Total harga */
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 700;
+      font-size: 14px;
+      color: #222;
+      margin-bottom: 14px;
+    }
+
+    .total-row .total-nominal {
+      color: #2daae1;
+      font-size: 15px;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12.5px;
+      color: #666;
+      margin-bottom: 5px;
+    }
+
+    /* Tombol booking */
+    .btn-booking {
+      background: #3a7d44;
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 25px;
+      width: 100%;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      letter-spacing: 1px;
+      font-family: 'Poppins', sans-serif;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .btn-booking:hover {
+      background: #2d6235;
+      transform: translateY(-1px);
+    }
+
+    @media (max-width: 768px) {
+      .container-content { flex-direction: column; }
+      .paket-banner { grid-template-columns: 1fr; }
+      .paket-banner-main { grid-row: auto; }
+    }
+  </style>
 </head>
 <body>
 
-
 <div class="wrapper">
-	<div class="container">
+  <div class="container-content">
 
-		<!-- BAGIAN KIRI: INFO PAKET -->
-		<div class="left-info">
-			<div class="paket-header">PAKET <?php echo strtoupper($nama_paket); ?></div>
-			
-			<img src="../images/30.jpg" alt="Rafting" class="gambar-paket">
+    <!-- KIRI -->
+    <div class="left-section">
 
-			<div class="detail-box">
-				<div class="box-kecil">
-					<?php 
-						echo number_format($harga_satuan, 0, ',', '.') . " Ribu /pax"; 
-					?>
-				</div>
-				<div class="box-kecil">
-					<?php 
-						if($nama_paket == "Fun Rafting") echo "Jarak 4 KM (~1-1,5 jam)";
-						else if($nama_paket == "Medium") echo "Jarak 12 KM (~2,5-3 jam)";
-						else if($nama_paket == "Long Trip") echo "Jarak 15 KM (~3-3,5 jam)";
-						else echo "Jarak Tidak Diketahui";
-					?>
-				</div>
-			</div>
+      <!-- Banner & Info Paket -->
+      <div class="paket-banner">
+        <div class="paket-banner-main">
+          <div class="paket-label">PAKET <?= strtoupper(htmlspecialchars($paket)) ?></div>
+          <img src="<?= $info['img'] ?>" alt="Rafting">
+        </div>
 
-			<div class="deskripsi">
-				<p>Menikmati serunya arung jeram di sungai Bodri dengan pemandangan alam yang asri dan menantang adrenalin. Cocok untuk liburan keluarga, gathering kantor, atau sekolah.</p>
-				<p>Fasilitas lengkap termasuk peralatan safety, guide berpengalaman, makan siang, dan dokumentasi.</p>
-			</div>
-		</div>
+        <div class="paket-banner-img2">
+          <img src="<?= $info['img2'] ?>" alt="Rafting 2">
+        </div>
 
-		<!-- BAGIAN KANAN: FORM PEMESANAN -->
-		<div class="right-form">
-			<h3>FORM PEMESANAN</h3>
-			
-			<img src="../images/12.jpg" alt="Preview" class="gambar-preview">
+        <div class="paket-info-boxes">
+          <div class="info-box">
+            <?= number_format($info['harga'], 0, ',', '.') ?> Ribu<br>/pax
+          </div>
+          <div class="info-box">
+            <?= htmlspecialchars($info['jarak']) ?>
+          </div>
+        </div>
+      </div>
 
-			<form method="POST" action="proses_booking.php">
-				
-				<input type="hidden" name="harga_satuan" value="<?php echo $harga_satuan; ?>">
-				<input type="hidden" name="nama_paket" value="<?php echo $nama_paket; ?>">
+      <!-- Deskripsi -->
+      <div class="deskripsi-box">
+        <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
+        <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
+        <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
+        <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
+        <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
+      </div>
 
-				<div class="form-group">
-					<label>Paket</label>
-					<span><strong><?php echo $nama_paket; ?></strong></span>
-				</div>
+    </div>
 
-				<div class="form-group">
-					<label>Tanggal</label>
-					<input type="date" name="tanggal" required>
-				</div>
+    <!-- KANAN: FORM PEMESANAN -->
+    <div class="right-section">
+      <div class="form-title">FROM PEMESANAN</div>
 
-				<div class="form-group">
-					<label>Jam</label>
-					<select name="jam" required>
-						<option value="">-- Pilih Jam --</option>
-						<option value="08:00">08:00</option>
-						<option value="10:00">10:00</option>
-						<option value="13:00">13:00</option>
-					</select>
-				</div>
+      <img src="<?= $info['img2'] ?>" alt="Preview" class="form-img">
 
-				<div class="form-group">
-					<label>Jumlah Orang</label>
-					<div class="jumlah-control">
-						<button type="button" onclick="kurang()">-</button>
-						<input type="number" id="jumlah" name="jumlah_orang" value="2" min="1" readonly>
-						<button type="button" onclick="tambah()">+</button>
-					</div>
-				</div>
+      <form action="booking_proses.php" method="POST">
+        <input type="hidden" name="paket" value="<?= htmlspecialchars($paket) ?>">
+        <input type="hidden" name="harga_satuan" value="<?= $harga_final ?>">
 
-				<div class="form-group">
-					<label>No. Telepon</label>
-					<input type="text" name="telepon" placeholder="08xx..." required>
-				</div>
+        <table class="form-table">
+          <tr>
+            <td>Paket</td>
+            <td>:</td>
+            <td><strong><?= htmlspecialchars($paket) ?></strong></td>
+          </tr>
+          <tr>
+            <td>Tanggal</td>
+            <td>:</td>
+            <td><input type="date" name="tanggal" required min="<?= date('Y-m-d') ?>"></td>
+          </tr>
+          <tr>
+            <td>Jam</td>
+            <td>:</td>
+            <td><input type="time" name="jam" required></td>
+          </tr>
+          <tr>
+            <td>Orang</td>
+            <td>:</td>
+            <td>
+              <div class="counter">
+                <button type="button" onclick="kurang()">-</button>
+                <span id="jumlah">2</span>
+                <button type="button" onclick="tambah()">+</button>
+              </div>
+              <input type="hidden" name="jumlah_orang" id="input_jumlah" value="2">
+            </td>
+          </tr>
+          <tr>
+            <td>No. Telepon</td>
+            <td>:</td>
+            <td><input type="tel" name="no_telepon" placeholder="08xxxxxxxxxx" required></td>
+          </tr>
+        </table>
 
-				<div class="total-harga">
-					Total: Rp <span id="total"><?php echo number_format($harga_satuan * 2, 0, ',', '.'); ?></span>
-				</div>
+        <hr class="divider">
 
-				<button type="submit" class="btn-booking">BOOKING SEKARANG</button>
+        <div class="info-row">
+          <span>Harga Satuan</span>
+          <span>: Rp <?= number_format($harga_final, 0, ',', '.') ?></span>
+        </div>
+        <div class="info-row">
+          <span>Jumlah Orang</span>
+          <span>: <span id="show_orang">2</span> orang</span>
+        </div>
 
-			</form>
-		</div>
+        <hr class="divider">
 
-	</div>
+        <div class="total-row">
+          <span>TOTAL HARGA :</span>
+          <span class="total-nominal" id="show_total">Rp <?= number_format($harga_final * 2, 0, ',', '.') ?></span>
+        </div>
+
+        <button type="submit" class="btn-booking">BOOKING</button>
+      </form>
+    </div>
+
+  </div>
 </div>
 
 <script>
-	let harga = <?php echo $harga_satuan; ?>;
+  let jumlah = 2;
+  const harga = <?= $harga_final ?>;
 
-	function tambah() {
-		let jml = document.getElementById('jumlah');
-		jml.value = parseInt(jml.value) + 1;
-		hitungTotal();
-	}
+  function update() {
+    document.getElementById('jumlah').textContent = jumlah;
+    document.getElementById('input_jumlah').value = jumlah;
+    document.getElementById('show_orang').textContent = jumlah;
+    const total = jumlah * harga;
+    document.getElementById('show_total').textContent = 'Rp ' + total.toLocaleString('id-ID');
+  }
 
-	function kurang() {
-		let jml = document.getElementById('jumlah');
-		if(parseInt(jml.value) > 1) {
-			jml.value = parseInt(jml.value) - 1;
-			hitungTotal();
-		}
-	}
+  function tambah() {
+    jumlah++;
+    update();
+  }
 
-	function hitungTotal() {
-		let jml = document.getElementById('jumlah').value;
-		let total = harga * jml;
-		document.getElementById('total').innerText = formatRupiah(total);
-	}
-
-	function formatRupiah(angka) {
-		return angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-	}
+  function kurang() {
+    if (jumlah > 1) { jumlah--; update(); }
+  }
 </script>
 
 </body>
