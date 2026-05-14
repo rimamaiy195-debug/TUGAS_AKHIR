@@ -228,7 +228,18 @@ include '../koneksi.php';
               <div class="value">BODRI Rafting Singorojo</div>
             </div>
           </div>
-
+          <iframe
+            loading="lazy"
+            allowfullscreen
+            referrerpolicy="no-referrer-when-downgrade"
+            src="https://www.google.com/maps?q=-7.0797804,110.1838086&z=15&output=embed">
+          </iframe>
+          <iframe
+        loading="lazy"
+        allowfullscreen
+        referrerpolicy="no-referrer-when-downgrade"
+        src="https://www.google.com/maps?q=-7.0797804,110.1838086&z=15&output=embed">
+      </iframe>
         </div>
       </div>
 

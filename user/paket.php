@@ -336,8 +336,8 @@
   <script>
     let paketDipilih = null;
 
-    function pilihPaket(el, nama, harga) {
-      paketDipilih = { nama, harga };
+    function pilihPaket(el, idPaket, nama, harga) {
+      paketDipilih = { idPaket, nama, harga };
       document.querySelectorAll('.paket-card').forEach(c => c.classList.remove('active'));
       el.classList.add('active');
     }
@@ -347,9 +347,7 @@
         alert("Pilih paket dulu ya!");
         return;
       }
-      window.location.href =
-        "booking.php?paket=" + encodeURIComponent(paketDipilih.nama) +
-        "&harga=" + paketDipilih.harga;
+      window.location.href = "booking.php?id_paket=" + paketDipilih.idPaket;
     }
   </script>
 
