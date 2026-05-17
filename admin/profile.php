@@ -465,14 +465,12 @@ include 'header.php'
     <div class="about-gallery">
       <div class="gallery-main">
         <div>
-          <div style="font-size:2.5rem;margin-bottom:8px;">🛶</div>
-          <div>Foto Rafting Utama</div>
-          <div style="font-size:0.78rem;margin-top:4px;opacity:0.5;">Ganti dengan gambar asli</div>
+          <div style="font-size:2.5rem;margin-bottom:8px;"><img src="../images/53.jpg"></div>
         </div>
       </div>
       <div class="gallery-row">
-        <div class="gallery-thumb">🌊</div>
-        <div class="gallery-thumb">🏞️</div>
+        <div class="gallery-thumb"><img src="../images/5.jpg"></div>
+        <div class="gallery-thumb"><img src="../images/50.JPG"></div>
       </div>
       <div class="loc-badge">
         <div class="loc-icon">📍</div>

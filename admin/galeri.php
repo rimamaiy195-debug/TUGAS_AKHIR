@@ -126,6 +126,21 @@ include 'header.php';
 	    text-transform: uppercase;
 	  }
 
+	  footer {
+	    background: #07192a;
+	    color: rgba(255,255,255,0.4);
+	    text-align: center;
+	    padding: 36px 60px;
+	    font-size: 0.85rem;
+	  }
+
+	  footer .brand {
+	    font-family: 'Playfair Display', serif;
+	    font-size: 1.4rem;
+	    color: var(--gold);
+	    margin-bottom: 8px;
+	  }
+
 	  .wa-float {
       position: fixed;
       bottom: 20px;
@@ -233,6 +248,12 @@ include 'header.php';
 
 	  </div>
 	</div>
+
+	<footer>
+  <div class="brand">Rafting Singorojo</div>
+  <p>Arung Jeram Sungai Bodri · Desa Singorojo, Kab. Kendal, Jawa Tengah</p>
+  <p style="margin-top:16px;font-size:0.76rem;opacity:0.35;">© 2025 Rafting Singorojo. All rights reserved.</p>
+</footer>
 
 	<a href="https://wa.me/6283102048865" target="_blank" class="wa-float">
     <i class="fab fa-whatsapp"></i>
