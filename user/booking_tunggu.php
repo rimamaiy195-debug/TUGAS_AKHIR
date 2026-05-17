@@ -1,14 +1,13 @@
 <?php
-session_start();
 include '../koneksi.php';
-include '../header.php';
+include 'header.php';
 
 if (!isset($_SESSION['id_user'])) {
     header("Location: ../login.php"); exit;
 }
 
 $id_booking = isset($_GET['id']) ? (int)$_GET['id'] : 0;
-if ($id_booking <= 0) { header("Location: ../paket.php"); exit; }
+if ($id_booking <= 0) { header("Location: paket.php"); exit; }
 
 $sql = "SELECT 
             b.id_booking, b.total_harga, b.status,
@@ -27,7 +26,7 @@ $stmt->execute();
 $data = $stmt->get_result()->fetch_assoc();
 $stmt->close();
 
-if (!$data) { header("Location: ../paket.php"); exit; }
+if (!$data) { header("Location: paket.php"); exit; }
 
 // Kalau sudah dikonfirmasi → langsung ke invoice
 if ($data['status'] === 'konfirmasi' || $data['status'] === 'selesai') {

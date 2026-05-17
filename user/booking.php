@@ -12,7 +12,7 @@ $nama_paket = isset($_GET['paket']) ? trim($_GET['paket']) : '';
 $harga_url  = isset($_GET['harga']) ? (int)$_GET['harga'] : 0;
 
 if (empty($nama_paket)) {
-    header("Location: ../paket.php"); exit;
+    header("Location: paket.php"); exit;
 }
 
 // Cari data paket dari DB berdasarkan nama
@@ -29,17 +29,7 @@ if (!$paket) {
         'nama_paket' => $nama_paket,
         'harga'      => $harga_url,
         'kapasitas'  => 20,
-        'deskripsi'  => 'Istilah arung jeram berasal dari kata whitewater rafting atau rafting yang jika diterjemahkan bebas ke dalam bahasa Inggris berarti mengarungi sungai menggunakan perahu dengan mengandalkan keterampilan mendayung. Menurut Federasi Arung Jeram Internasional (IRF), definisi arung jeram atau white water rafting adalah "aktivitas manusia dalam mengarungi sungai dengan mengandalkan keterampilan dan kekuatan fisik untuk mendayung perahu yang terbuat dari bahan lunak yang secara umum diterima sebagai aktivitas sosial, komersial, dan olahraga". Meskipun pada awal perkembangannya di Indonesia istilah arung jeram memiliki beberapa nama, namun dalam standar kompetensi ini terminologi "white water rafting" digunakan sebagai istilah untuk merujuk pada "aktivitas mengarungi sungai menggunakan perahu karet atau kendaraan serupa lainnya dengan awak dua orang atau lebih yang mengandalkan kekuatan mendayung".
-
-          pengertian arung jeram dalam kompetensi ini adalah :
-
-          Berdasarkan mediannya ; Dilakukan di sungai yang berarus,
-          Berdasarkan sarananya ; Menggunakan perahu berbahan dasar karet (inflatable),
-          Berdasarkan tenaga yang digunakan ; Mengandalkan kekuatan dan kemampuan fisik dalam
-          mendayung, baik dayung tunggal, dayung ganda maupun oars.
-          Berdasarkan jumlah awaknya ; Berawak dua orang atau lebih dimana salah seorang
-          diantaranya bertindak sebagai pengemudi,
-          Berdasarkan batasan-batasan diatas, maka kompetensi kepemanduan arung jeram secara spesifik ditujukan bagi kegiatan pemanduan wisata arung jeram sebagaimana terminologi arung jeram diatas.',
+        'deskripsi'  => 'Nikmati pengalaman rafting yang seru dan memacu adrenalin di sungai Bodri Singorojo.',
     ];
 }
 
@@ -53,11 +43,44 @@ $stmt->close();
 $error = isset($_GET['error']) ? $_GET['error'] : '';
 
 $jarak_map = [
-    'Fun Rafting' => 'Jarak 4 KM (~1 - 1,5 jam)',
-    'Medium'      => 'Jarak 12 km (~2,5 - 3 jam)',
-    'Long Trip'   => 'Jarak 15 km (~3 - 3,5 jam)',
+    'PAKET FUN RAFTING' => 'Jarak 4 KM (~1 - 1,5 jam)',
+    'PAKET MEDIUM'      => 'Jarak 12 km (~2,5 - 3 jam)',
+    'PAKET LONG TRIP'   => 'Jarak 15 km (~3 - 3,5 jam)',
 ];
-$jarak = $jarak_map[$nama_paket] ?? 'Hubungi kami';
+$jarak = $jarak_map[$nama_paket] ?? 'Jarak 4 KM (~1 - 1,5 jam)';
+
+$deskripsi_map = [
+    'PAKET FUN RAFTING' => 'Istilah arung jeram berasal dari kata whitewater rafting atau rafting yang jika diterjemahkan bebas ke dalam bahasa Inggris berarti mengarungi sungai menggunakan perahu dengan mengandalkan keterampilan mendayung. Menurut Federasi Arung Jeram Internasional (IRF), definisi arung jeram atau white water rafting adalah "aktivitas manusia dalam mengarungi sungai dengan mengandalkan keterampilan dan kekuatan fisik untuk mendayung perahu yang terbuat dari bahan lunak yang secara umum diterima sebagai aktivitas sosial, komersial, dan olahraga". Meskipun pada awal perkembangannya di Indonesia istilah arung jeram memiliki beberapa nama, namun dalam standar kompetensi ini terminologi "white water rafting" digunakan sebagai istilah untuk merujuk pada "aktivitas mengarungi sungai menggunakan perahu karet atau kendaraan serupa lainnya dengan awak dua orang atau lebih yang mengandalkan kekuatan mendayung".
+
+Pengertian arung jeram dalam kompetensi ini adalah :
+
+Berdasarkan mediannya ; Dilakukan di sungai yang berarus,
+Berdasarkan sarananya ; Menggunakan perahu berbahan dasar karet (inflatable),
+Berdasarkan tenaga yang digunakan ; Mengandalkan kekuatan dan kemampuan fisik dalam mendayung, baik dayung tunggal, dayung ganda maupun oars.
+Berdasarkan jumlah awaknya ; Berawak dua orang atau lebih dimana salah seorang diantaranya bertindak sebagai pengemudi.
+Berdasarkan batasan-batasan diatas, maka kompetensi kepemanduan arung jeram secara spesifik ditujukan bagi kegiatan pemanduan wisata arung jeram sebagaimana terminologi arung jeram diatas.',
+
+    'PAKET MEDIUM'      => 'Istilah arung jeram berasal dari kata whitewater rafting atau rafting yang jika diterjemahkan bebas ke dalam bahasa Inggris berarti mengarungi sungai menggunakan perahu dengan mengandalkan keterampilan mendayung. Menurut Federasi Arung Jeram Internasional (IRF), definisi arung jeram atau white water rafting adalah "aktivitas manusia dalam mengarungi sungai dengan mengandalkan keterampilan dan kekuatan fisik untuk mendayung perahu yang terbuat dari bahan lunak yang secara umum diterima sebagai aktivitas sosial, komersial, dan olahraga". Meskipun pada awal perkembangannya di Indonesia istilah arung jeram memiliki beberapa nama, namun dalam standar kompetensi ini terminologi "white water rafting" digunakan sebagai istilah untuk merujuk pada "aktivitas mengarungi sungai menggunakan perahu karet atau kendaraan serupa lainnya dengan awak dua orang atau lebih yang mengandalkan kekuatan mendayung".
+
+Pengertian arung jeram dalam kompetensi ini adalah :
+
+Berdasarkan mediannya ; Dilakukan di sungai yang berarus,
+Berdasarkan sarananya ; Menggunakan perahu berbahan dasar karet (inflatable),
+Berdasarkan tenaga yang digunakan ; Mengandalkan kekuatan dan kemampuan fisik dalam mendayung, baik dayung tunggal, dayung ganda maupun oars.
+Berdasarkan jumlah awaknya ; Berawak dua orang atau lebih dimana salah seorang diantaranya bertindak sebagai pengemudi.
+Berdasarkan batasan-batasan diatas, maka kompetensi kepemanduan arung jeram secara spesifik ditujukan bagi kegiatan pemanduan wisata arung jeram sebagaimana terminologi arung jeram diatas.',
+
+    'PAKET LONG TRIP'   => 'Istilah arung jeram berasal dari kata whitewater rafting atau rafting yang jika diterjemahkan bebas ke dalam bahasa Inggris berarti mengarungi sungai menggunakan perahu dengan mengandalkan keterampilan mendayung. Menurut Federasi Arung Jeram Internasional (IRF), definisi arung jeram atau white water rafting adalah "aktivitas manusia dalam mengarungi sungai dengan mengandalkan keterampilan dan kekuatan fisik untuk mendayung perahu yang terbuat dari bahan lunak yang secara umum diterima sebagai aktivitas sosial, komersial, dan olahraga". Meskipun pada awal perkembangannya di Indonesia istilah arung jeram memiliki beberapa nama, namun dalam standar kompetensi ini terminologi "white water rafting" digunakan sebagai istilah untuk merujuk pada "aktivitas mengarungi sungai menggunakan perahu karet atau kendaraan serupa lainnya dengan awak dua orang atau lebih yang mengandalkan kekuatan mendayung".
+
+Pengertian arung jeram dalam kompetensi ini adalah :
+
+Berdasarkan mediannya ; Dilakukan di sungai yang berarus,
+Berdasarkan sarananya ; Menggunakan perahu berbahan dasar karet (inflatable),
+Berdasarkan tenaga yang digunakan ; Mengandalkan kekuatan dan kemampuan fisik dalam mendayung, baik dayung tunggal, dayung ganda maupun oars.
+Berdasarkan jumlah awaknya ; Berawak dua orang atau lebih dimana salah seorang diantaranya bertindak sebagai pengemudi.
+Berdasarkan batasan-batasan diatas, maka kompetensi kepemanduan arung jeram secara spesifik ditujukan bagi kegiatan pemanduan wisata arung jeram sebagaimana terminologi arung jeram diatas.',
+];
+$deskripsi = $deskripsi_map[$nama_paket] ?? $paket['deskripsi'];
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -70,7 +93,7 @@ $jarak = $jarak_map[$nama_paket] ?? 'Hubungi kami';
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { background-color: #f0eada; font-family: 'Poppins', Arial, sans-serif; }
 
-    .wrapper { max-width: 1600px; margin: 30px auto; padding: 0 20px; }
+    .wrapper { max-width: 1600px; margin: 28px auto; padding: 0 20px; }
     .container-content { display: flex; gap: 22px; align-items: flex-start; }
 
     /* KIRI */
@@ -190,7 +213,8 @@ $jarak = $jarak_map[$nama_paket] ?? 'Hubungi kami';
     <div class="left-section">
       <div class="paket-banner">
         <div class="paket-banner-main">
-          <div class="paket-label">PAKET <?= strtoupper(htmlspecialchars($paket['nama_paket'])) ?></div>
+          <?php $nama_display = preg_replace('/^PAKET\s+/i', '', $paket['nama_paket']); ?>
+<div class="paket-label">PAKET <?= strtoupper($nama_display) ?></div>
           <img src="../images/1.jpg" alt="Rafting">
         </div>
         <div class="paket-banner-img2">
@@ -203,7 +227,7 @@ $jarak = $jarak_map[$nama_paket] ?? 'Hubungi kami';
       </div>
 
       <div class="deskripsi-box">
-        <p><?= nl2br(htmlspecialchars($paket['deskripsi'])) ?></p>
+        <p><?= nl2br(htmlspecialchars($deskripsi)) ?></p>
       </div>
     </div>
 
@@ -284,8 +308,8 @@ $jarak = $jarak_map[$nama_paket] ?? 'Hubungi kami';
 
 <script>
   let jumlah = 1;
-  const kapasitas = <?= (int)$paket['kapasitas'] ?>;
-  const harga = <?= (int)$paket['harga'] ?>;
+  const kapasitas = <?= (int)preg_replace('/[^0-9]/', '', $paket['kapasitas']) ?: 99 ?>;
+ const harga = <?= (int)$paket['harga'] ?>;
 
   function update() {
     document.getElementById('jumlah').textContent = jumlah;

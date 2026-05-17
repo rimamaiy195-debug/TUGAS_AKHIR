@@ -14,7 +14,7 @@ $stmt->execute();
 $usr = $stmt->get_result()->fetch_assoc();
 $stmt->close();
 
-if (!$usr || $usr['akses'] != '1') {
+if (!$usr || $usr['akses'] != '2') {
     header("Location: ../index.php"); exit;
 }
 
