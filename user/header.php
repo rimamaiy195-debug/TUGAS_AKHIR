@@ -93,6 +93,7 @@ body {
         <li><a href="paket.php" class="<?= ($current_page == 'paket.php') ? 'active' : '' ?>">Paket</a></li>
         <li><a href="booking.php" class="<?= ($current_page == 'booking.php') ? 'active' : '' ?>">Booking</a></li>
         <li><a href="contact.php" class="<?= ($current_page == 'contact.php') ? 'active' : '' ?>">Contact</a></li>
+        <li><a href="logout.php" class="<?= ($current_page == 'logout.php') ? 'active' : '' ?>">Log Out</a></li>
 
         <li class="search-box">
             <input type="text" placeholder="Cari">
