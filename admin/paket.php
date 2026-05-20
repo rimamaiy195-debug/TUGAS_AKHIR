@@ -30,7 +30,6 @@
       align-items: flex-start;
     }
 
-    /* ===== KIRI ===== */
     .left-section {
       flex: 5;
       background: white;
@@ -93,7 +92,6 @@
       transform: scale(1.03);
     }
 
-    /* Tambahan kecil buat deskripsi saja */
     .deskripsi {
       font-size: 12px;
       color: #666;
@@ -133,7 +131,6 @@
       flex-shrink: 0;
     }
 
-    /* ===== KANAN ===== */
     .right-section {
       flex: 1;
       display: flex;
@@ -233,7 +230,6 @@
   <div class="wrapper">
     <div class="container-content">
 
-      <!-- KIRI -->
       <div class="left-section">
 
         <div class="section-title">DAFTAR KEGIATAN OUTDOOR LAIN</div>
@@ -282,7 +278,6 @@
 
         </div>
 
-        <!-- FASILITAS -->
         <div class="fasilitas-box">
           <div class="section-title">FASILITAS</div>
           <ul>
@@ -299,7 +294,6 @@
 
       </div>
 
-      <!-- KANAN -->
       <div class="right-section">
 
         <div class="paket-card" onclick="pilihPaket(this, 'Fun Rafting', 135000)">

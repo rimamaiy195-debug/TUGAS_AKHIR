@@ -28,7 +28,6 @@ $stmt->close();
 
 if (!$data) { header("Location: ../paket.php"); exit; }
 
-// Hanya bisa akses kalau sudah dikonfirmasi
 if ($data['status'] === 'pending') {
     header("Location: booking_tunggu.php?id=$id_booking"); exit;
 }

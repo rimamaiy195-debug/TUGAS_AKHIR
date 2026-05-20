@@ -15,29 +15,27 @@ $jumlah     = isset($_POST['jumlah'])     ? (int)$_POST['jumlah']     : 1;
 $harga      = isset($_POST['harga'])      ? (int)$_POST['harga']      : 0;
 $no_telp    = isset($_POST['no_telp'])    ? trim($_POST['no_telp'])   : '';
 
-// Kalau id_paket = 0, cari dari nama_paket
 if ($id_paket === 0 && !empty($nama_paket)) {
-    $stmt = $koneksi->prepare("SELECT * FROM paket WHERE nama_paket = ? LIMIT 1");
-    $stmt->bind_param("s", $nama_paket);
-    $stmt->execute();
+    $stmt = $koneksi prepare("SELECT * FROM paket WHERE nama_paket = ? LIMIT 1");
+    $stmt bind_param("s", $nama_paket);
+    $stmt execute();
     $row = $stmt->get_result()->fetch_assoc();
-    $stmt->close();
+    $stmt close();
     if ($row) {
         $id_paket  = $row['id_paket'];
         $harga     = $row['harga'];
         $kapasitas = $row['kapasitas'];
     }
 } else {
-    $stmt = $koneksi->prepare("SELECT kapasitas, harga FROM paket WHERE id_paket = ?");
-    $stmt->bind_param("i", $id_paket);
-    $stmt->execute();
-    $row = $stmt->get_result()->fetch_assoc();
-    $stmt->close();
+    $stmt = $koneksi prepare("SELECT kapasitas, harga FROM paket WHERE id_paket = ?");
+    $stmt bind_param("i", $id_paket);
+    $stmt execute();
+    $row = $stmt get_result() fetch_assoc();
+    $stmt close();
     $kapasitas = $row ? $row['kapasitas'] : 99;
     if ($row) $harga = $row['harga'];
 }
 
-// Validasi
 $errors = [];
 if ($id_paket <= 0)  $errors[] = "Paket tidak valid.";
 if (empty($tanggal)) $errors[] = "Tanggal wajib diisi.";
@@ -57,38 +55,35 @@ if (!empty($errors)) {
 
 $total_harga = $harga * $jumlah;
 
-// Simpan ke tabel jadwal
-$stmt = $koneksi->prepare("INSERT INTO jadwal (tanggal, jam, jumlah) VALUES (?, ?, ?)");
-$stmt->bind_param("ssi", $tanggal, $jam, $jumlah);
-if (!$stmt->execute()) {
+$stmt = $koneksi prepare("INSERT INTO jadwal (tanggal, jam, jumlah) VALUES (?, ?, ?)");
+$stmt bind_param("ssi", $tanggal, $jam, $jumlah);
+if (!$stmt execute()) {
     $pesan = urlencode("Gagal menyimpan jadwal, coba lagi.");
     header("Location: booking.php?paket=" . urlencode($nama_paket) . "&harga=$harga&error=$pesan");
     exit;
 }
 $id_jadwal = $stmt->insert_id;
-$stmt->close();
+$stmt close();
 
-// Update no_hp user kalau berbeda
 if (!empty($no_telp)) {
-    $upd = $koneksi->prepare("UPDATE user SET no_hp = ? WHERE id_user = ?");
-    $upd->bind_param("si", $no_telp, $id_user);
-    $upd->execute();
-    $upd->close();
+    $upd = $koneksi prepare("UPDATE user SET no_hp = ? WHERE id_user = ?");
+    $upd bind_param("si", $no_telp, $id_user);
+    $upd execute();
+    $upd close();
 }
 
-// Simpan ke tabel booking
 $status = 'pending';
-$stmt = $koneksi->prepare("INSERT INTO booking (id_user, id_paket, id_jadwal, total_harga, status) VALUES (?, ?, ?, ?, ?)");
-$stmt->bind_param("iiiis", $id_user, $id_paket, $id_jadwal, $total_harga, $status);
+$stmt = $koneksi prepare("INSERT INTO booking (id_user, id_paket, id_jadwal, total_harga, status) VALUES (?, ?, ?, ?, ?)");
+$stmt bind_param("iiiis", $id_user, $id_paket, $id_jadwal, $total_harga, $status);
 
-if ($stmt->execute()) {
-    $id_booking = $stmt->insert_id;
-    $stmt->close();
+if ($stmt execute()) {
+    $id_booking = $stmt insert_id;
+    $stmt close();
     header("Location: booking_tunggu.php?id=$id_booking");
     exit;
 } else {
-    $stmt->close();
-    $koneksi->query("DELETE FROM jadwal WHERE id_jadwal = $id_jadwal");
+    $stmt close();
+    $koneksi query("DELETE FROM jadwal WHERE id_jadwal = $id_jadwal");
     $pesan = urlencode("Gagal menyimpan booking, coba lagi.");
     header("Location: booking.php?paket=" . urlencode($nama_paket) . "&harga=$harga&error=$pesan");
     exit;

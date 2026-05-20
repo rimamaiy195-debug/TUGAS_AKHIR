@@ -2,7 +2,6 @@
 include '../koneksi.php';
 include 'header.php';
 
-// Cek login
 if (!isset($_SESSION['id_user'])) {
     header("Location: ../login.php"); exit;
 }
@@ -15,14 +14,12 @@ if (empty($nama_paket)) {
     header("Location: paket.php"); exit;
 }
 
-// Cari data paket dari DB berdasarkan nama
 $stmt = $koneksi->prepare("SELECT * FROM paket WHERE nama_paket = ? LIMIT 1");
 $stmt->bind_param("s", $nama_paket);
 $stmt->execute();
 $paket = $stmt->get_result()->fetch_assoc();
 $stmt->close();
 
-// Kalau tidak ketemu di DB, pakai data dari URL
 if (!$paket) {
     $paket = [
         'id_paket'   => 0,
@@ -33,7 +30,6 @@ if (!$paket) {
     ];
 }
 
-// Ambil data user
 $stmt = $koneksi->prepare("SELECT * FROM user WHERE id_user = ?");
 $stmt->bind_param("i", $id_user);
 $stmt->execute();
@@ -96,7 +92,6 @@ $deskripsi = $deskripsi_map[$nama_paket] ?? $paket['deskripsi'];
     .wrapper { max-width: 1600px; margin: 28px auto; padding: 0 20px; }
     .container-content { display: flex; gap: 22px; align-items: flex-start; }
 
-    /* KIRI */
     .left-section { flex: 2; display: flex; flex-direction: column; gap: 16px; }
 
     .paket-banner { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -134,7 +129,6 @@ $deskripsi = $deskripsi_map[$nama_paket] ?? $paket['deskripsi'];
     }
     .deskripsi-box p:last-child { margin-bottom: 0; }
 
-    /* KANAN */
     .right-section {
       flex: 1; background: white; border-radius: 14px; padding: 18px;
       box-shadow: 0 3px 12px rgba(0,0,0,0.08);
@@ -209,7 +203,6 @@ $deskripsi = $deskripsi_map[$nama_paket] ?? $paket['deskripsi'];
 <div class="wrapper">
   <div class="container-content">
 
-    <!-- KIRI -->
     <div class="left-section">
       <div class="paket-banner">
         <div class="paket-banner-main">
@@ -231,7 +224,6 @@ $deskripsi = $deskripsi_map[$nama_paket] ?? $paket['deskripsi'];
       </div>
     </div>
 
-    <!-- KANAN -->
     <div class="right-section">
       <div class="form-title">FORM PEMESANAN</div>
       <img src="../images/6.jpg" alt="Preview" class="form-img">
