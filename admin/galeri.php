@@ -20,7 +20,6 @@ include 'header.php';
 	    color: #333;
 	  }
 
-	  /* HEADER */
 	  .header {
 	    background: #1a5f7a;
 	    color: white;
@@ -55,7 +54,6 @@ include 'header.php';
 	    opacity: 0.85;
 	  }
 
-	  /* SECTION */
 	  .section {
 	    max-width: 900px;
 	    margin: 0 auto;
@@ -79,7 +77,6 @@ include 'header.php';
 	    background: #d0e4ed;
 	  }
 
-	  /* GRID */
 	  .grid {
 	    display: grid;
 	    grid-template-columns: repeat(3, 1fr);
@@ -100,7 +97,6 @@ include 'header.php';
 	    display: block;
 	  }
 
-	  /* Ganti .img-placeholder dengan img jika punya foto asli */
 	  .card .img-placeholder {
 	    width: 100%;
 	    aspect-ratio: 4/3;
@@ -184,7 +180,6 @@ include 'header.php';
 	  <div class="section-title">📷 Foto Kegiatan</div>
 	  <div class="grid">
 
-	    <!-- Ganti div.img-placeholder dengan <img src="foto1.jpg" alt="..."> jika punya foto -->
 	    <div class="card">
 	      <div class="img-placeholder"><img src="../images/45.jpg"></div>
 	      <div class="tag">Arung Jeram</div>

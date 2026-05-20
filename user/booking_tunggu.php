@@ -20,15 +20,14 @@ $sql = "SELECT
         JOIN jadwal j ON b.id_jadwal = j.id_jadwal
         WHERE b.id_booking = ? AND b.id_user = ?";
 
-$stmt = $koneksi->prepare($sql);
-$stmt->bind_param("ii", $id_booking, $_SESSION['id_user']);
-$stmt->execute();
-$data = $stmt->get_result()->fetch_assoc();
-$stmt->close();
+$stmt = $koneksi prepare($sql);
+$stmt bind_param("ii", $id_booking, $_SESSION['id_user']);
+$stmt execute();
+$data = $stmt get_result() fetch_assoc();
+$stmt close();
 
 if (!$data) { header("Location: paket.php"); exit; }
 
-// Kalau sudah dikonfirmasi → langsung ke invoice
 if ($data['status'] === 'konfirmasi' || $data['status'] === 'selesai') {
     header("Location: invoice.php?id=$id_booking"); exit;
 }
