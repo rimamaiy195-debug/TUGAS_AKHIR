@@ -46,8 +46,6 @@ if ($jumlah < 1)     $errors[] = "Jumlah orang minimal 1.";
 if (empty($no_telp)) $errors[] = "No. Telepon wajib diisi.";
 if (!empty($tanggal) && strtotime($tanggal) < strtotime(date('Y-m-d')))
     $errors[] = "Tanggal tidak boleh di masa lalu.";
-if (isset($kapasitas) && $jumlah > $kapasitas)
-    $errors[] = "Jumlah orang melebihi kapasitas ({$kapasitas} orang).";
 
 if (!empty($errors)) {
     $pesan = urlencode(implode(' | ', $errors));

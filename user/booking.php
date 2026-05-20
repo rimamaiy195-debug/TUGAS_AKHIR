@@ -308,7 +308,6 @@ $deskripsi = $deskripsi_map[$nama_paket] ?? $paket['deskripsi'];
 
 <script>
   let jumlah = 1;
-  const kapasitas = <?= (int)preg_replace('/[^0-9]/', '', $paket['kapasitas']) ?: 99 ?>;
  const harga = <?= (int)$paket['harga'] ?>;
 
   function update() {
@@ -320,8 +319,8 @@ $deskripsi = $deskripsi_map[$nama_paket] ?? $paket['deskripsi'];
   }
 
   function tambah() {
-    if (jumlah < kapasitas) { jumlah++; update(); }
-    else alert('Maksimal ' + kapasitas + ' orang untuk paket ini!');
+    jumlah++;
+    update();
   }
 
   function kurang() {
