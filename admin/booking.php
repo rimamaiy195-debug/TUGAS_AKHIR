@@ -31,7 +31,6 @@ while ($row = mysqli_fetch_assoc($query)) {
 ?>
 
 <style>
-  /* reset yang bentrok dari header.php */
   body {
     background-color: #f1f5f9 !important;
     font-family: 'Poppins', sans-serif !important;
@@ -41,7 +40,6 @@ while ($row = mysqli_fetch_assoc($query)) {
     padding: 32px 48px;
   }
 
-  /* ── Page header ── */
   .page-header {
     display: flex; align-items: flex-start;
     justify-content: space-between; margin-bottom: 28px;
@@ -49,7 +47,6 @@ while ($row = mysqli_fetch_assoc($query)) {
   .page-header h1 { font-size: 1.5rem; font-weight: 700; color: #1e293b; }
   .page-header p  { font-size: .8rem; color: #64748b; margin-top: 3px; }
 
-  /* ── Stats ── */
   .stats {
     display: grid; grid-template-columns: repeat(3, 1fr);
     gap: 16px; margin-bottom: 24px;
@@ -71,7 +68,6 @@ while ($row = mysqli_fetch_assoc($query)) {
   .stat-num { font-size: 1.7rem; font-weight: 700; line-height: 1; color: #1e293b; }
   .stat-lbl { font-size: .75rem; color: #64748b; margin-top: 4px; font-weight: 500; }
 
-  /* ── Filter bar ── */
   .filter-bar {
     display: flex; gap: 8px; flex-wrap: wrap;
     align-items: center; margin-bottom: 18px;
@@ -98,7 +94,6 @@ while ($row = mysqli_fetch_assoc($query)) {
   }
   .search-wrap input:focus { border-color: #0d4f6c; }
 
-  /* ── Table ── */
   .table-wrap {
     background: #fff; border-radius: 14px;
     box-shadow: 0 1px 4px rgba(0,0,0,.06); overflow: hidden;
@@ -121,7 +116,6 @@ while ($row = mysqli_fetch_assoc($query)) {
   .nama-text { font-weight: 600; }
   .hp-text   { font-size: .76rem; color: #64748b; }
 
-  /* ── Badge ── */
   .badge {
     display: inline-block; padding: 4px 12px;
     border-radius: 20px; font-size: .7rem; font-weight: 700;
@@ -131,7 +125,6 @@ while ($row = mysqli_fetch_assoc($query)) {
   .badge-2 { background: #e0e7ff; color: #3730a3; }
   .badge-3 { background: #fee2e2; color: #991b1b; }
 
-  /* ── Action buttons ── */
   .actions { display: flex; gap: 6px; flex-wrap: wrap; }
   .btn-act {
     padding: 5px 12px; border-radius: 6px; border: none;
@@ -148,7 +141,6 @@ while ($row = mysqli_fetch_assoc($query)) {
     color: #94a3b8; font-size: .85rem;
   }
 
-  /* ── Toast ── */
   .toast {
     position: fixed; bottom: 24px; right: 24px;
     background: #1e293b; color: #fff;

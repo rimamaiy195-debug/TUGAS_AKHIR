@@ -26,7 +26,15 @@ if (!$paket) {
         'nama_paket' => $nama_paket,
         'harga'      => $harga_url,
         'kapasitas'  => 20,
-        'deskripsi'  => 'Nikmati pengalaman rafting yang seru dan memacu adrenalin di sungai Bodri Singorojo.',
+        'deskripsi'  => 'Istilah arung jeram berasal dari kata whitewater rafting atau rafting yang jika diterjemahkan bebas ke dalam bahasa Inggris berarti mengarungi sungai menggunakan perahu dengan mengandalkan keterampilan mendayung. Menurut Federasi Arung Jeram Internasional (IRF), definisi arung jeram atau white water rafting adalah "aktivitas manusia dalam mengarungi sungai dengan mengandalkan keterampilan dan kekuatan fisik untuk mendayung perahu yang terbuat dari bahan lunak yang secara umum diterima sebagai aktivitas sosial, komersial, dan olahraga". Meskipun pada awal perkembangannya di Indonesia istilah arung jeram memiliki beberapa nama, namun dalam standar kompetensi ini terminologi "white water rafting" digunakan sebagai istilah untuk merujuk pada "aktivitas mengarungi sungai menggunakan perahu karet atau kendaraan serupa lainnya dengan awak dua orang atau lebih yang mengandalkan kekuatan mendayung".
+
+Pengertian arung jeram dalam kompetensi ini adalah :
+
+Berdasarkan mediannya ; Dilakukan di sungai yang berarus,
+Berdasarkan sarananya ; Menggunakan perahu berbahan dasar karet (inflatable),
+Berdasarkan tenaga yang digunakan ; Mengandalkan kekuatan dan kemampuan fisik dalam mendayung, baik dayung tunggal, dayung ganda maupun oars.
+Berdasarkan jumlah awaknya ; Berawak dua orang atau lebih dimana salah seorang diantaranya bertindak sebagai pengemudi.
+Berdasarkan batasan-batasan diatas, maka kompetensi kepemanduan arung jeram secara spesifik ditujukan bagi kegiatan pemanduan wisata arung jeram sebagaimana terminologi arung jeram diatas.',
     ];
 }
 
