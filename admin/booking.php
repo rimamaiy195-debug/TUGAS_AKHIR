@@ -180,7 +180,6 @@ while ($row = mysqli_fetch_assoc($query)) {
   }
 </style>
 
-<!-- KONTEN UTAMA -->
 <div class="main-content">
 
   <!-- HEADER -->
@@ -191,7 +190,6 @@ while ($row = mysqli_fetch_assoc($query)) {
     </div>
   </div>
 
-  <!-- STATS -->
   <div class="stats">
     <div class="stat-card">
       <div class="stat-icon blue">
@@ -222,7 +220,6 @@ while ($row = mysqli_fetch_assoc($query)) {
     </div>
   </div>
 
-  <!-- FILTER -->
   <div class="filter-bar">
     <button class="filter-btn active" onclick="setFilter(-1, this)">Semua</button>
     <button class="filter-btn" onclick="setFilter(0, this)">Menunggu</button>
@@ -235,7 +232,6 @@ while ($row = mysqli_fetch_assoc($query)) {
     </div>
   </div>
 
-  <!-- TABLE -->
   <div class="table-wrap">
     <table>
       <thead>
@@ -252,9 +248,8 @@ while ($row = mysqli_fetch_assoc($query)) {
     </table>
   </div>
 
-</div><!-- end .main-content -->
+</div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
 <footer>
