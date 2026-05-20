@@ -51,7 +51,7 @@ $jarak_map = [
     'PAKET MEDIUM'      => 'Jarak 12 km (~2,5 - 3 jam)',
     'PAKET LONG TRIP'   => 'Jarak 15 km (~3 - 3,5 jam)',
 ];
-$jarak = $jarak_map[$nama_paket] ?? 'Jarak 4 KM (~1 - 1,5 jam)';
+$jarak = $jarak_map[strtoupper(trim($nama_paket))] ?? 'Jarak 4 KM (~1 - 1,5 jam)';
 
 $deskripsi_map = [
     'PAKET FUN RAFTING' => 'Istilah arung jeram berasal dari kata whitewater rafting atau rafting yang jika diterjemahkan bebas ke dalam bahasa Inggris berarti mengarungi sungai menggunakan perahu dengan mengandalkan keterampilan mendayung. Menurut Federasi Arung Jeram Internasional (IRF), definisi arung jeram atau white water rafting adalah "aktivitas manusia dalam mengarungi sungai dengan mengandalkan keterampilan dan kekuatan fisik untuk mendayung perahu yang terbuat dari bahan lunak yang secara umum diterima sebagai aktivitas sosial, komersial, dan olahraga". Meskipun pada awal perkembangannya di Indonesia istilah arung jeram memiliki beberapa nama, namun dalam standar kompetensi ini terminologi "white water rafting" digunakan sebagai istilah untuk merujuk pada "aktivitas mengarungi sungai menggunakan perahu karet atau kendaraan serupa lainnya dengan awak dua orang atau lebih yang mengandalkan kekuatan mendayung".
@@ -84,7 +84,7 @@ Berdasarkan tenaga yang digunakan ; Mengandalkan kekuatan dan kemampuan fisik da
 Berdasarkan jumlah awaknya ; Berawak dua orang atau lebih dimana salah seorang diantaranya bertindak sebagai pengemudi.
 Berdasarkan batasan-batasan diatas, maka kompetensi kepemanduan arung jeram secara spesifik ditujukan bagi kegiatan pemanduan wisata arung jeram sebagaimana terminologi arung jeram diatas.',
 ];
-$deskripsi = $deskripsi_map[$nama_paket] ?? $paket['deskripsi'];
+$deskripsi = $deskripsi_map[strtoupper(trim($nama_paket))] ?? $paket['deskripsi'];
 ?>
 <!DOCTYPE html>
 <html lang="id">
