@@ -35,7 +35,6 @@ $today = date('Y-m-d');
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 
 <style>
-  /* ── reset bentrok dari header.php ── */
   body {
     background-color: #f1f5f9 !important;
     font-family: 'Poppins', sans-serif !important;
@@ -53,7 +52,6 @@ $today = date('Y-m-d');
     box-sizing: border-box !important;
   }
 
-  /* page header */
   .page-header {
     display: flex !important; align-items: flex-start !important;
     justify-content: space-between !important; margin-bottom: 28px !important;
@@ -61,7 +59,6 @@ $today = date('Y-m-d');
   .page-header h1 { font-size: 1.5rem !important; font-weight: 700 !important; color: #1e293b !important; margin: 0 !important; }
   .page-header p  { font-size: .8rem !important; color: #64748b !important; margin-top: 3px !important; margin-bottom: 0 !important; }
 
-  /* stats */
   .stats {
     display: grid !important; grid-template-columns: repeat(3, 1fr) !important;
     gap: 16px !important; margin-bottom: 24px !important;
@@ -83,7 +80,6 @@ $today = date('Y-m-d');
   .stat-num { font-size: 1.7rem !important; font-weight: 700 !important; line-height: 1 !important; color: #1e293b !important; }
   .stat-lbl { font-size: .75rem !important; color: #64748b !important; margin-top: 4px !important; font-weight: 500 !important; }
 
-  /* toolbar */
   .toolbar {
     display: flex !important; gap: 10px !important; flex-wrap: wrap !important;
     align-items: center !important; margin-bottom: 14px !important;
@@ -131,7 +127,6 @@ $today = date('Y-m-d');
 
   .toolbar-divider { width: 1px !important; height: 30px !important; background: #e2e8f0 !important; }
 
-  /* STATUS BTN — semua pakai !important */
   .status-btn {
     padding: 7px 16px !important; border-radius: 20px !important;
     border: 1.5px solid #cbd5e1 !important; background: #fff !important;
@@ -144,7 +139,6 @@ $today = date('Y-m-d');
     background: #0d4f6c !important; color: #fff !important; border-color: #0d4f6c !important;
   }
 
-  /* search */
   .search-wrap { position: relative !important; margin-left: auto !important; }
   .search-wrap svg {
     position: absolute !important; left: 11px !important; top: 50% !important;
@@ -158,7 +152,6 @@ $today = date('Y-m-d');
   }
   .search-wrap input:focus { border-color: #0d4f6c !important; }
 
-  /* info strip */
   .info-strip {
     display: none; align-items: center !important; gap: 8px !important;
     background: #e8f4f8 !important; border: 1px solid #b8dde8 !important;
@@ -169,7 +162,6 @@ $today = date('Y-m-d');
   .info-strip.show { display: flex !important; }
   .info-strip svg { width: 16px !important; height: 16px !important; fill: #0d4f6c !important; flex-shrink: 0 !important; }
 
-  /* table */
   .table-wrap {
     background: #fff !important; border-radius: 14px !important;
     box-shadow: 0 1px 4px rgba(0,0,0,.06) !important; overflow: hidden !important;
@@ -247,7 +239,6 @@ $today = date('Y-m-d');
     </div>
   </div>
 
-  <!-- STATS -->
   <div class="stats">
     <div class="stat-card">
       <div class="stat-icon blue">
@@ -278,7 +269,6 @@ $today = date('Y-m-d');
     </div>
   </div>
 
-  <!-- TOOLBAR -->
   <div class="toolbar">
     <div class="date-group">
       <svg viewBox="0 0 24 24" style="width:15px;height:15px;fill:#64748b;flex-shrink:0"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>
@@ -411,14 +401,14 @@ $today = date('Y-m-d');
   document.querySelector('.btn-today').classList.add('active');
   document.querySelector('.btn-reset').classList.remove('active');
   renderTable();
-}
+  }
 
-function resetTgl() {
-  document.getElementById('filterTgl').value = '';
-  document.querySelector('.btn-reset').classList.add('active');
-  document.querySelector('.btn-today').classList.remove('active');
-  renderTable();
-}
+  function resetTgl() {
+    document.getElementById('filterTgl').value = '';
+    document.querySelector('.btn-reset').classList.add('active');
+    document.querySelector('.btn-today').classList.remove('active');
+    renderTable();
+  }
 
   function changeStatus(id, status) {
     fetch('update_status.php', {
