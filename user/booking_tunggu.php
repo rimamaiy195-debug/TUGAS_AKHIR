@@ -10,7 +10,7 @@ $id_booking = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 if ($id_booking <= 0) { header("Location: paket.php"); exit; }
 
 $sql = "SELECT 
-            b.id_booking, b.total_harga, b.status,
+            b.id_booking, b.total_harga, b.status, 
             u.nama, u.no_hp,
             p.nama_paket, p.harga,
             j.tanggal, j.jam, j.jumlah
@@ -28,18 +28,20 @@ $stmt->close();
 
 if (!$data) { header("Location: paket.php"); exit; }
 
+// Kalau sudah dikonfirmasi → redirect ke invoice
 if ($data['status'] === 'konfirmasi' || $data['status'] === 'selesai') {
     header("Location: invoice.php?id=$id_booking"); exit;
 }
 
-$dibatalkan = ($data['status'] === 'batal');
+$dibatalkan  = ($data['status'] === 'batal');
+$baru_konfirm = isset($_GET['notif']) && $_GET['notif'] === 'konfirmasi';
 ?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Menunggu Konfirmasi - Rafting Singorojo</title>
+  <title>Status Booking - Rafting Singorojo</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -111,12 +113,20 @@ $dibatalkan = ($data['status'] === 'batal');
       border-radius: 10px; padding: 12px 16px;
       font-size: 12.5px; color: #744210; margin-top: 20px; line-height: 1.6;
     }
+
     .batal-box {
       background: #fff5f5; border: 1px solid #feb2b2;
       border-radius: 10px; padding: 12px 16px;
       font-size: 12.5px; color: #742a2a; margin-top: 20px; line-height: 1.6;
     }
 
+    .alasan-box {
+      background: #fff5f5; border-left: 4px solid #e74c3c;
+      border-radius: 6px; padding: 10px 14px;
+      font-size: 12.5px; color: #742a2a; margin-top: 10px; line-height: 1.6;
+    }
+
+    /* Tombol */
     .btn-wrap { display: flex; gap: 10px; margin-top: 22px; }
     .btn {
       flex: 1; padding: 12px; border-radius: 25px; border: none;
@@ -127,15 +137,70 @@ $dibatalkan = ($data['status'] === 'batal');
     .btn:hover { opacity: 0.85; }
     .btn-home    { background: #2daae1; color: white; }
     .btn-refresh { background: #f0f0f0; color: #555; }
+    .btn-batal   { background: #e74c3c; color: white; flex: 0.8; }
 
     .refresh-note { text-align: center; font-size: 12px; color: #aaa; margin-top: 14px; }
     .refresh-note span { font-weight: 600; color: #2daae1; }
+
+    /* ===== POPUP BATAL ===== */
+    .overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.5); z-index: 100;
+      align-items: center; justify-content: center;
+    }
+    .overlay.show { display: flex; }
+
+    .popup {
+      background: white; border-radius: 16px; padding: 28px 24px;
+      width: 90%; max-width: 420px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+      animation: popIn 0.2s ease;
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.9); opacity: 0; }
+      to   { transform: scale(1);   opacity: 1; }
+    }
+
+    .popup h3 { font-size: 16px; font-weight: 700; color: #333; margin-bottom: 8px; }
+    .popup p  { font-size: 13px; color: #666; margin-bottom: 16px; line-height: 1.5; }
+
+    .popup textarea {
+      width: 100%; border: 1.5px solid #ddd; border-radius: 8px;
+      padding: 10px 12px; font-size: 13px; font-family: 'Poppins', sans-serif;
+      resize: none; height: 90px; outline: none; transition: border 0.2s;
+    }
+    .popup textarea:focus { border-color: #e74c3c; }
+
+    .popup-err { color: #e74c3c; font-size: 12px; margin-top: 4px; display: none; }
+
+    .popup-btns { display: flex; gap: 10px; margin-top: 16px; }
+    .popup-btns button {
+      flex: 1; padding: 11px; border-radius: 25px; border: none;
+      font-size: 13px; font-weight: 700; cursor: pointer;
+      font-family: 'Poppins', sans-serif; transition: opacity 0.2s;
+    }
+    .popup-btns button:hover { opacity: 0.85; }
+    .btn-cancel-no  { background: #f0f0f0; color: #555; }
+    .btn-cancel-yes { background: #e74c3c; color: white; }
+
+    /* ===== NOTIFIKASI KONFIRMASI ===== */
+    .notif-bar {
+      background: #d4edda; color: #155724;
+      border: 1px solid #c3e6cb; border-radius: 10px;
+      padding: 14px 18px; margin-bottom: 16px;
+      display: flex; align-items: center; gap: 10px;
+      font-size: 13px; font-weight: 600;
+    }
+    .notif-bar svg { width: 20px; height: 20px; stroke: #155724; fill: none; stroke-width: 2.5; flex-shrink: 0; }
   </style>
+
   <?php if (!$dibatalkan): ?>
   <script>
     let countdown = 15;
     function tick() {
-      document.getElementById('cd').textContent = countdown;
+      const el = document.getElementById('cd');
+      if (el) el.textContent = countdown;
       if (countdown <= 0) window.location.reload();
       countdown--;
       setTimeout(tick, 1000);
@@ -146,9 +211,25 @@ $dibatalkan = ($data['status'] === 'batal');
 </head>
 <body>
 
+<!-- POPUP BATAL -->
+<div class="overlay" id="popupBatal">
+  <div class="popup">
+    <h3>Batalkan Booking?</h3>
+    <p>Apakah Anda yakin ingin membatalkan booking ini? Tindakan ini tidak dapat dikembalikan.</p>
+    <form action="booking_batal.php" method="POST">
+      <input type="hidden" name="id_booking" value="<?= $id_booking ?>">
+      <div class="popup-btns">
+        <button type="button" class="btn-cancel-no" onclick="tutupPopup()">Tidak, Kembali</button>
+        <button type="submit" class="btn-cancel-yes">Ya, Batalkan</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <div class="wrapper">
   <div class="card">
 
+    <!-- TOP -->
     <div class="card-top">
       <div class="icon-wrap">
         <?php if ($dibatalkan): ?>
@@ -159,7 +240,7 @@ $dibatalkan = ($data['status'] === 'batal');
       </div>
       <?php if ($dibatalkan): ?>
         <h2>Booking Dibatalkan</h2>
-        <p>Maaf, booking Anda telah dibatalkan.<br>Silakan hubungi kami untuk informasi lebih lanjut.</p>
+        <p>Booking Anda telah dibatalkan.<br>Silakan hubungi kami untuk informasi lebih lanjut.</p>
       <?php else: ?>
         <h2>Menunggu Konfirmasi</h2>
         <p>Booking Anda sudah masuk!<br>Kami akan segera mengkonfirmasi pesanan Anda.</p>
@@ -167,7 +248,15 @@ $dibatalkan = ($data['status'] === 'batal');
       <div class="no-booking">#<?= str_pad($data['id_booking'], 5, '0', STR_PAD_LEFT) ?></div>
     </div>
 
+    <!-- BODY -->
     <div class="card-body">
+
+      <?php if ($baru_konfirm): ?>
+      <div class="notif-bar">
+        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        Selamat! Booking Anda telah dikonfirmasi. Silakan lihat invoice Anda.
+      </div>
+      <?php endif; ?>
 
       <div class="section-label">Data Pemesan</div>
       <div class="detail-row">
@@ -207,15 +296,22 @@ $dibatalkan = ($data['status'] === 'batal');
       </div>
 
       <?php if ($dibatalkan): ?>
-        <div class="batal-box">✕ Booking ini telah dibatalkan. Hubungi kami untuk informasi lebih lanjut.</div>
+        <div class="batal-box">✕ Booking ini telah dibatalkan.</div>
+        <?php if (!empty($data['alasan_batal'])): ?>
+          <div class="alasan-box">
+            <strong>Alasan:</strong> <?= htmlspecialchars($data['alasan_batal']) ?>
+          </div>
+        <?php endif; ?>
       <?php else: ?>
         <div class="info-box">⏳ Halaman ini otomatis cek status setiap 15 detik. Setelah admin mengkonfirmasi, Anda langsung diarahkan ke invoice.</div>
       <?php endif; ?>
 
+      <!-- Tombol -->
       <div class="btn-wrap">
-        <a href="../index.php" class="btn btn-home">← Kembali ke Home</a>
+        <a href="cek_booking.php" class="btn btn-home">Ke Riwayat Booking</a>
         <?php if (!$dibatalkan): ?>
           <a href="booking_tunggu.php?id=<?= $id_booking ?>" class="btn btn-refresh">↻ Refresh</a>
+          <button class="btn btn-batal" onclick="bukaPopup()">✕ Batalkan</button>
         <?php endif; ?>
       </div>
 
@@ -226,5 +322,27 @@ $dibatalkan = ($data['status'] === 'batal');
     </div>
   </div>
 </div>
+
+<script>
+  function bukaPopup() {
+    document.getElementById('popupBatal').classList.add('show');
+  }
+
+  function tutupPopup() {
+    document.getElementById('popupBatal').classList.remove('show');
+    document.getElementById('errAlasan').style.display = 'none';
+    document.getElementById('alasanInput').value = '';
+  }
+
+  function konfirmasiBatal() {
+    const alasan = document.getElementById('alasanInput').value.trim();
+    if (!alasan) {
+      document.getElementById('errAlasan').style.display = 'block';
+      return;
+    }
+    document.getElementById('errAlasan').style.display = 'none';
+    document.getElementById('alasanInput').closest('form').submit();
+  }
+</script>
 </body>
 </html>
