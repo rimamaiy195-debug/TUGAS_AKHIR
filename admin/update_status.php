@@ -10,11 +10,7 @@ if (!in_array($status, [0, 1, 2, 3])) {
     exit;
 }
 
-$query = mysqli_query($koneksi, "
-UPDATE booking 
-SET status=$status 
-WHERE id_booking=$id
-");
+$query = mysqli_query($koneksi, "UPDATE booking SET status=$status WHERE id_booking=$id");
 
 if ($query) {
     echo 'ok';

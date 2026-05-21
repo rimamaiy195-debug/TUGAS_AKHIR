@@ -14,7 +14,7 @@ $query = mysqli_query($koneksi, "
     JOIN user   u ON b.id_user   = u.id_user
     JOIN paket  p ON b.id_paket  = p.id_paket
     JOIN jadwal j ON b.id_jadwal = j.id_jadwal
-    ORDER BY b.id_booking DESC
+    ORDER BY j.tanggal ASC, b.id_booking DESC
 ");
 
 $bookings = [];
@@ -28,153 +28,218 @@ while ($row = mysqli_fetch_assoc($query)) {
         'status' => (int)$row['status'],
     ];
 }
+
+$today = date('Y-m-d');
 ?>
 
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+
 <style>
+  /* ── reset bentrok dari header.php ── */
   body {
     background-color: #f1f5f9 !important;
     font-family: 'Poppins', sans-serif !important;
+    padding: 0 !important;
+    margin: 0 !important;
   }
 
   .main-content {
-    padding: 32px 48px;
+    padding: 32px 48px !important;
+    font-family: 'Poppins', sans-serif !important;
   }
 
+  .main-content * {
+    font-family: 'Poppins', sans-serif !important;
+    box-sizing: border-box !important;
+  }
+
+  /* page header */
   .page-header {
-    display: flex; align-items: flex-start;
-    justify-content: space-between; margin-bottom: 28px;
+    display: flex !important; align-items: flex-start !important;
+    justify-content: space-between !important; margin-bottom: 28px !important;
   }
-  .page-header h1 { font-size: 1.5rem; font-weight: 700; color: #1e293b; }
-  .page-header p  { font-size: .8rem; color: #64748b; margin-top: 3px; }
+  .page-header h1 { font-size: 1.5rem !important; font-weight: 700 !important; color: #1e293b !important; margin: 0 !important; }
+  .page-header p  { font-size: .8rem !important; color: #64748b !important; margin-top: 3px !important; margin-bottom: 0 !important; }
 
+  /* stats */
   .stats {
-    display: grid; grid-template-columns: repeat(3, 1fr);
-    gap: 16px; margin-bottom: 24px;
+    display: grid !important; grid-template-columns: repeat(3, 1fr) !important;
+    gap: 16px !important; margin-bottom: 24px !important;
   }
   .stat-card {
-    background: #fff; border-radius: 14px;
-    padding: 20px 22px;
-    display: flex; align-items: center; gap: 16px;
-    box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    background: #fff !important; border-radius: 14px !important; padding: 20px 22px !important;
+    display: flex !important; align-items: center !important; gap: 16px !important;
+    box-shadow: 0 1px 4px rgba(0,0,0,.06) !important;
   }
   .stat-icon {
-    width: 50px; height: 50px; border-radius: 12px;
-    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    width: 50px !important; height: 50px !important; border-radius: 12px !important;
+    display: flex !important; align-items: center !important; justify-content: center !important;
+    flex-shrink: 0 !important;
   }
-  .stat-icon svg { width: 24px; height: 24px; fill: #fff; }
-  .stat-icon.blue  { background: #0d4f6c; }
-  .stat-icon.amber { background: #f59e0b; }
-  .stat-icon.green { background: #10b981; }
-  .stat-num { font-size: 1.7rem; font-weight: 700; line-height: 1; color: #1e293b; }
-  .stat-lbl { font-size: .75rem; color: #64748b; margin-top: 4px; font-weight: 500; }
+  .stat-icon svg { width: 24px !important; height: 24px !important; fill: #fff !important; }
+  .stat-icon.blue  { background: #0d4f6c !important; }
+  .stat-icon.amber { background: #f59e0b !important; }
+  .stat-icon.green { background: #10b981 !important; }
+  .stat-num { font-size: 1.7rem !important; font-weight: 700 !important; line-height: 1 !important; color: #1e293b !important; }
+  .stat-lbl { font-size: .75rem !important; color: #64748b !important; margin-top: 4px !important; font-weight: 500 !important; }
 
-  .filter-bar {
-    display: flex; gap: 8px; flex-wrap: wrap;
-    align-items: center; margin-bottom: 18px;
+  /* toolbar */
+  .toolbar {
+    display: flex !important; gap: 10px !important; flex-wrap: wrap !important;
+    align-items: center !important; margin-bottom: 14px !important;
   }
-  .filter-btn {
-    padding: 7px 18px; border-radius: 20px;
-    border: 1.5px solid #cbd5e1; background: #fff;
-    font-family: 'Poppins', sans-serif; font-size: .8rem; font-weight: 600;
-    color: #64748b; cursor: pointer; transition: all .2s;
-  }
-  .filter-btn:hover  { border-color: #0d4f6c; color: #0d4f6c; }
-  .filter-btn.active { background: #0d4f6c; color: #fff; border-color: #0d4f6c; }
 
-  .search-wrap { position: relative; margin-left: auto; }
+  .date-group {
+    display: flex !important; align-items: center !important; gap: 8px !important;
+    background: #fff !important; border: 1.5px solid #cbd5e1 !important;
+    border-radius: 10px !important; padding: 6px 14px !important;
+  }
+  .date-group label {
+    font-size: .78rem !important; font-weight: 600 !important;
+    color: #64748b !important; white-space: nowrap !important;
+    margin: 0 !important; padding: 0 !important;
+  }
+  .date-group input[type="date"] {
+    border: none !important; outline: none !important; background: transparent !important;
+    font-family: 'Poppins', sans-serif !important; font-size: .82rem !important;
+    color: #1e293b !important; cursor: pointer !important; padding: 0 !important; margin: 0 !important;
+  }
+
+  .btn-today {
+  padding: 7px 14px; border-radius: 8px;
+  border: 1.5px solid #cbd5e1; background: #fff;
+  font-family: 'Poppins', sans-serif; font-size: .78rem; font-weight: 600;
+  color: #64748b; cursor: pointer; transition: all .2s;
+  }
+  .btn-today.active {
+    background: #0d4f6c !important; color: #fff !important; border-color: #0d4f6c !important;
+  }
+
+  .btn-reset {
+    padding: 7px 14px !important; border-radius: 8px !important;
+    border: 1.5px solid #cbd5e1 !important; background: #fff !important;
+    font-family: 'Poppins', sans-serif !important; font-size: .78rem !important; font-weight: 600 !important;
+    color: #64748b !important; cursor: pointer !important; text-decoration: none !important;
+  }
+  .btn-reset:hover { border-color: #0d4f6c !important; color: #0d4f6c !important; }
+
+  .btn-reset.active {
+  background: #0d4f6c !important;
+  color: #fff !important;
+  border-color: #0d4f6c !important;
+  }
+
+  .toolbar-divider { width: 1px !important; height: 30px !important; background: #e2e8f0 !important; }
+
+  /* STATUS BTN — semua pakai !important */
+  .status-btn {
+    padding: 7px 16px !important; border-radius: 20px !important;
+    border: 1.5px solid #cbd5e1 !important; background: #fff !important;
+    font-family: 'Poppins', sans-serif !important; font-size: .78rem !important; font-weight: 600 !important;
+    color: #64748b !important; cursor: pointer !important;
+    text-decoration: none !important; display: inline-block !important;
+  }
+  .status-btn:hover  { border-color: #0d4f6c !important; color: #0d4f6c !important; }
+  .status-btn.active {
+    background: #0d4f6c !important; color: #fff !important; border-color: #0d4f6c !important;
+  }
+
+  /* search */
+  .search-wrap { position: relative !important; margin-left: auto !important; }
   .search-wrap svg {
-    position: absolute; left: 11px; top: 50%; transform: translateY(-50%);
-    width: 15px; height: 15px; fill: #94a3b8;
+    position: absolute !important; left: 11px !important; top: 50% !important;
+    transform: translateY(-50%) !important; width: 15px !important; height: 15px !important; fill: #94a3b8 !important;
   }
   .search-wrap input {
-    padding: 8px 14px 8px 34px; border-radius: 20px;
-    border: 1.5px solid #cbd5e1;
-    font-family: 'Poppins', sans-serif; font-size: .8rem; outline: none; width: 200px;
-    background: #fff; transition: border-color .2s;
+    padding: 8px 14px 8px 34px !important; border-radius: 20px !important;
+    border: 1.5px solid #cbd5e1 !important; background: #fff !important;
+    font-family: 'Poppins', sans-serif !important; font-size: .8rem !important;
+    outline: none !important; width: 200px !important;
   }
-  .search-wrap input:focus { border-color: #0d4f6c; }
+  .search-wrap input:focus { border-color: #0d4f6c !important; }
 
+  /* info strip */
+  .info-strip {
+    display: none; align-items: center !important; gap: 8px !important;
+    background: #e8f4f8 !important; border: 1px solid #b8dde8 !important;
+    border-radius: 8px !important; padding: 8px 14px !important;
+    font-size: .8rem !important; color: #0d4f6c !important; font-weight: 600 !important;
+    margin-bottom: 14px !important;
+  }
+  .info-strip.show { display: flex !important; }
+  .info-strip svg { width: 16px !important; height: 16px !important; fill: #0d4f6c !important; flex-shrink: 0 !important; }
+
+  /* table */
   .table-wrap {
-    background: #fff; border-radius: 14px;
-    box-shadow: 0 1px 4px rgba(0,0,0,.06); overflow: hidden;
+    background: #fff !important; border-radius: 14px !important;
+    box-shadow: 0 1px 4px rgba(0,0,0,.06) !important; overflow: hidden !important;
   }
-  table { width: 100%; border-collapse: collapse; }
-  thead { background: #f8fafc; }
-  th {
-    padding: 13px 18px; text-align: left;
-    font-size: .7rem; font-weight: 700;
-    letter-spacing: .8px; text-transform: uppercase;
-    color: #94a3b8; border-bottom: 1px solid #e2e8f0;
+  .table-wrap table { width: 100% !important; border-collapse: collapse !important; }
+  .table-wrap thead { background: #f8fafc !important; }
+  .table-wrap th {
+    padding: 13px 18px !important; text-align: left !important;
+    font-size: .7rem !important; font-weight: 700 !important;
+    letter-spacing: .8px !important; text-transform: uppercase !important;
+    color: #94a3b8 !important; border-bottom: 1px solid #e2e8f0 !important;
+    background: #f8fafc !important;
   }
-  td {
-    padding: 14px 18px; font-size: .83rem;
-    border-bottom: 1px solid #f1f5f9; vertical-align: middle;
-    color: #1e293b;
+  .table-wrap td {
+    padding: 14px 18px !important; font-size: .83rem !important;
+    border-bottom: 1px solid #f1f5f9 !important; vertical-align: middle !important;
+    color: #1e293b !important;
   }
-  tr:last-child td { border-bottom: none; }
-  tr:hover td { background: #fafcff; }
-  .nama-text { font-weight: 600; }
-  .hp-text   { font-size: .76rem; color: #64748b; }
+  .table-wrap tr:last-child td { border-bottom: none !important; }
+  .table-wrap tr:hover td { background: #fafcff !important; }
+  .table-wrap tr.today-row td { background: #f0fdf4 !important; }
+  .table-wrap tr.today-row:hover td { background: #dcfce7 !important; }
 
-  .badge {
-    display: inline-block; padding: 4px 12px;
-    border-radius: 20px; font-size: .7rem; font-weight: 700;
+  .nama-text { font-weight: 600 !important; }
+  .hp-text   { font-size: .76rem !important; color: #64748b !important; }
+  .tgl-text  { font-weight: 600 !important; }
+  .tgl-badge {
+    display: inline-block !important; font-size: .65rem !important; font-weight: 700 !important;
+    background: #10b981 !important; color: #fff !important;
+    padding: 1px 7px !important; border-radius: 10px !important; margin-left: 6px !important;
+    vertical-align: middle !important;
   }
-  .badge-0 { background: #fef9c3; color: #a16207; }
-  .badge-1 { background: #d1fae5; color: #065f46; }
-  .badge-2 { background: #e0e7ff; color: #3730a3; }
-  .badge-3 { background: #fee2e2; color: #991b1b; }
 
-  .actions { display: flex; gap: 6px; flex-wrap: wrap; }
+  .badge { display: inline-block !important; padding: 4px 12px !important; border-radius: 20px !important; font-size: .7rem !important; font-weight: 700 !important; }
+  .badge-0 { background: #fef9c3 !important; color: #a16207 !important; }
+  .badge-1 { background: #d1fae5 !important; color: #065f46 !important; }
+  .badge-2 { background: #e0e7ff !important; color: #3730a3 !important; }
+  .badge-3 { background: #fee2e2 !important; color: #991b1b !important; }
+
+  .actions { display: flex !important; gap: 6px !important; flex-wrap: wrap !important; }
   .btn-act {
-    padding: 5px 12px; border-radius: 6px; border: none;
-    font-family: 'Poppins', sans-serif; font-size: .73rem; font-weight: 600;
-    cursor: pointer; transition: opacity .2s;
+    padding: 5px 12px !important; border-radius: 6px !important; border: none !important;
+    font-family: 'Poppins', sans-serif !important; font-size: .73rem !important; font-weight: 600 !important;
+    cursor: pointer !important;
   }
-  .btn-act:hover   { opacity: .8; }
-  .btn-confirm { background: #d1fae5; color: #065f46; }
-  .btn-done    { background: #e0e7ff; color: #3730a3; }
-  .btn-cancel  { background: #fee2e2; color: #991b1b; }
+  .btn-confirm { background: #d1fae5 !important; color: #065f46 !important; }
+  .btn-done    { background: #e0e7ff !important; color: #3730a3 !important; }
+  .btn-cancel  { background: #fee2e2 !important; color: #991b1b !important; }
 
-  .empty-row td {
-    text-align: center; padding: 40px;
-    color: #94a3b8; font-size: .85rem;
-  }
+  .empty-row td { text-align: center !important; padding: 40px !important; color: #94a3b8 !important; font-size: .85rem !important; }
 
   .toast {
-    position: fixed; bottom: 24px; right: 24px;
-    background: #1e293b; color: #fff;
-    padding: 11px 20px; border-radius: 10px;
-    font-size: .82rem; font-weight: 500;
-    transform: translateY(60px); opacity: 0;
-    transition: all .3s; z-index: 999;
+    position: fixed !important; bottom: 24px !important; right: 24px !important;
+    background: #1e293b !important; color: #fff !important;
+    padding: 11px 20px !important; border-radius: 10px !important;
+    font-size: .82rem !important; font-weight: 500 !important;
+    transform: translateY(60px) !important; opacity: 0 !important;
+    transition: all .3s !important; z-index: 999 !important;
   }
-  .toast.show { transform: translateY(0); opacity: 1; }
-
-  footer {
-    background: #07192a;
-    color: rgba(255,255,255,0.4);
-    text-align: center;
-    padding: 36px 60px;
-    font-size: 0.85rem;
-  }
-
-  footer .brand {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.4rem;
-    color: var(--gold);
-    margin-bottom: 8px;
-  }
+  .toast.show { transform: translateY(0) !important; opacity: 1 !important; }
 
   @media (max-width: 768px) {
-    .main-content { padding: 16px; }
-    .stats { grid-template-columns: 1fr 1fr; }
+    .main-content { padding: 16px !important; }
+    .stats { grid-template-columns: 1fr 1fr !important; }
+    .search-wrap { margin-left: 0 !important; }
   }
 </style>
 
 <div class="main-content">
 
-  <!-- HEADER -->
   <div class="page-header">
     <div>
       <h1>Manajemen Booking</h1>
@@ -182,6 +247,7 @@ while ($row = mysqli_fetch_assoc($query)) {
     </div>
   </div>
 
+  <!-- STATS -->
   <div class="stats">
     <div class="stat-card">
       <div class="stat-icon blue">
@@ -212,18 +278,36 @@ while ($row = mysqli_fetch_assoc($query)) {
     </div>
   </div>
 
-  <div class="filter-bar">
-    <button class="filter-btn active" onclick="setFilter(-1, this)">Semua</button>
-    <button class="filter-btn" onclick="setFilter(0, this)">Menunggu</button>
-    <button class="filter-btn" onclick="setFilter(1, this)">Diterima</button>
-    <button class="filter-btn" onclick="setFilter(2, this)">Selesai</button>
-    <button class="filter-btn" onclick="setFilter(3, this)">Dibatalkan</button>
+  <!-- TOOLBAR -->
+  <div class="toolbar">
+    <div class="date-group">
+      <svg viewBox="0 0 24 24" style="width:15px;height:15px;fill:#64748b;flex-shrink:0"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>
+      <label>Tanggal</label>
+      <input type="date" id="filterTgl" onchange="renderTable()"/>
+    </div>
+    <button class="btn-today" onclick="setToday()">Hari Ini</button>
+    <button class="btn-reset active" onclick="resetTgl()">Semua Tanggal</button>
+    <div class="toolbar-divider"></div>
+
+    <button class="status-btn active" onclick="setFilter(-1, this)">Semua</button>
+    <button class="status-btn" onclick="setFilter(0, this)">Menunggu</button>
+    <button class="status-btn" onclick="setFilter(1, this)">Diterima</button>
+    <button class="status-btn" onclick="setFilter(2, this)">Selesai</button>
+    <button class="status-btn" onclick="setFilter(3, this)">Dibatalkan</button>
+
     <div class="search-wrap">
       <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
       <input id="searchInput" oninput="renderTable()" placeholder="Cari nama..."/>
     </div>
   </div>
 
+  <!-- INFO STRIP -->
+  <div class="info-strip" id="infoStrip">
+    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+    <span id="infoText"></span>
+  </div>
+
+  <!-- TABLE -->
   <div class="table-wrap">
     <table>
       <thead>
@@ -244,17 +328,19 @@ while ($row = mysqli_fetch_assoc($query)) {
 
 <div class="toast" id="toast"></div>
 
-<footer>
-  <div class="brand">Rafting Singorojo</div>
-  <p>Arung Jeram Sungai Bodri · Desa Singorojo, Kab. Kendal, Jawa Tengah</p>
-  <p style="margin-top:16px;font-size:0.76rem;opacity:0.35;">© 2025 Rafting Singorojo. All rights reserved.</p>
-</footer>
-
 <script>
   let bookings      = <?php echo json_encode($bookings); ?>;
   let currentFilter = -1;
+  const TODAY       = '<?php echo $today; ?>';
 
   const statusLabel = ['Menunggu', 'Diterima', 'Selesai', 'Dibatalkan'];
+
+  function formatTgl(d) {
+    if (!d) return '-';
+    const [y, m, day] = d.split('-');
+    const months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+    return `${parseInt(day)} ${months[parseInt(m)-1]} ${y}`;
+  }
 
   function updateStats() {
     document.getElementById('stat-total').textContent   = bookings.length;
@@ -263,44 +349,76 @@ while ($row = mysqli_fetch_assoc($query)) {
   }
 
   function renderTable() {
-    const q    = document.getElementById('searchInput').value.toLowerCase();
-    const data = bookings.filter(b =>
-      (currentFilter === -1 || b.status === currentFilter) &&
-      b.nama.toLowerCase().includes(q)
-    );
+    const q      = document.getElementById('searchInput').value.toLowerCase();
+    const tglVal = document.getElementById('filterTgl').value;
+
+    const data = bookings.filter(b => {
+      const matchStatus = currentFilter === -1 || b.status === currentFilter;
+      const matchSearch = b.nama.toLowerCase().includes(q);
+      const matchTgl    = !tglVal || b.tgl === tglVal;
+      return matchStatus && matchSearch && matchTgl;
+    });
+
+    const strip = document.getElementById('infoStrip');
+    if (tglVal) {
+      const label = tglVal === TODAY ? 'Hari ini' : formatTgl(tglVal);
+      document.getElementById('infoText').textContent = `${label}: ditemukan ${data.length} booking`;
+      strip.classList.add('show');
+    } else {
+      strip.classList.remove('show');
+    }
 
     document.getElementById('tableBody').innerHTML = data.length === 0
-      ? `<tr class="empty-row"><td colspan="6">Tidak ada data booking</td></tr>`
-      : data.map((b, i) => `
-          <tr>
-            <td>${i + 1}</td>
-            <td>
-              <div class="nama-text">${b.nama}</div>
-              <div class="hp-text">${b.hp}</div>
-            </td>
-            <td>${b.tgl}</td>
-            <td>${b.paket}</td>
-            <td><span class="badge badge-${b.status}">${statusLabel[b.status] ?? '-'}</span></td>
-            <td>
-              <div class="actions">
-                ${b.status === 0 ? `<button class="btn-act btn-confirm" onclick="changeStatus(${b.id}, 1)">✔ Terima</button>` : ''}
-                ${b.status === 1 ? `<button class="btn-act btn-done"    onclick="changeStatus(${b.id}, 2)">🏁 Selesai</button>` : ''}
-                ${b.status !== 3 && b.status !== 2
-                  ? `<button class="btn-act btn-cancel" onclick="changeStatus(${b.id}, 3)">✖ Batal</button>` : ''}
-              </div>
-            </td>
-          </tr>
-        `).join('');
+      ? `<tr class="empty-row"><td colspan="6">Tidak ada booking untuk filter ini</td></tr>`
+      : data.map((b, i) => {
+          const isToday = b.tgl === TODAY;
+          return `
+            <tr class="${isToday ? 'today-row' : ''}">
+              <td>${i + 1}</td>
+              <td>
+                <div class="nama-text">${b.nama}</div>
+                <div class="hp-text">${b.hp}</div>
+              </td>
+              <td>
+                <span class="tgl-text">${formatTgl(b.tgl)}</span>
+                ${isToday ? '<span class="tgl-badge">Hari ini</span>' : ''}
+              </td>
+              <td>${b.paket}</td>
+              <td><span class="badge badge-${b.status}">${statusLabel[b.status] ?? '-'}</span></td>
+              <td>
+                <div class="actions">
+                  ${b.status === 0 ? `<button class="btn-act btn-confirm" onclick="changeStatus(${b.id}, 1)">✔ Terima</button>` : ''}
+                  ${b.status === 1 ? `<button class="btn-act btn-done"    onclick="changeStatus(${b.id}, 2)">🏁 Selesai</button>` : ''}
+                  ${b.status !== 3 && b.status !== 2
+                    ? `<button class="btn-act btn-cancel" onclick="changeStatus(${b.id}, 3)">✖ Batal</button>` : ''}
+                </div>
+              </td>
+            </tr>`;
+        }).join('');
 
     updateStats();
   }
 
   function setFilter(f, el) {
     currentFilter = f;
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.status-btn').forEach(b => b.classList.remove('active'));
     el.classList.add('active');
     renderTable();
   }
+
+  function setToday() {
+  document.getElementById('filterTgl').value = TODAY;
+  document.querySelector('.btn-today').classList.add('active');
+  document.querySelector('.btn-reset').classList.remove('active');
+  renderTable();
+}
+
+function resetTgl() {
+  document.getElementById('filterTgl').value = '';
+  document.querySelector('.btn-reset').classList.add('active');
+  document.querySelector('.btn-today').classList.remove('active');
+  renderTable();
+}
 
   function changeStatus(id, status) {
     fetch('update_status.php', {
