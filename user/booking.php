@@ -261,7 +261,20 @@ $deskripsi = $deskripsi_map[strtoupper(trim($nama_paket))] ?? $paket['deskripsi'
           </tr>
           <tr>
             <td>Jam</td><td>:</td>
-            <td><input type="time" name="jam" required></td>
+            <td>
+  <select name="jam" required style="border:1.5px solid #ddd;border-radius:6px;padding:5px 8px;font-size:13px;width:100%;font-family:'Poppins',sans-serif;outline:none;">
+    <option value="">-- Pilih Jam --</option>
+    <option value="08:00">08:00</option>
+    <option value="09:00">09:00</option>
+    <option value="10:00">10:00</option>
+    <option value="11:00">11:00</option>
+    <option value="12:00">12:00</option>
+    <option value="13:00">13:00</option>
+    <option value="14:00">14:00</option>
+    <option value="15:00">15:00</option>
+    <option value="16:00">16:00</option>
+  </select>
+</td>
           </tr>
           <tr>
             <td>Orang</td><td>:</td>
