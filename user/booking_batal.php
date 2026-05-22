@@ -12,7 +12,7 @@ $alasan = '';
 
 if ($id_booking <= 0) {
 if ($id_booking <= 0 || empty($alasan)) {
-    header("Location: booking_tunggu.php?id=$id_booking&error=Alasan+wajib+diisi");
+    header("Location: booking_tunggu.php?id=$id_booking&error=Alasan+wajib+diisi");}
     exit;
 }
 
