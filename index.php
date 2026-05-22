@@ -6,89 +6,100 @@
 
 <style>
 body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-}
+    margin: 0;
+    font-family: Arial, sans-serif;
+  }
 
-.hero {
-  height: 100vh;
-  background: url('images/6.jpg') no-repeat center/cover;
-  position: relative;
-}
+  .hero {
+    height: 100vh;
+    background: url('images/6.jpg') no-repeat center/cover;
+    position: relative;
+  }
 
-.overlay {
-  background: rgba(0, 0, 0, 0.4);
-  height: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 50px;
-  color: white;
-  box-sizing: border-box;
-}
+  .overlay {
+    background: rgba(0, 0, 0, 0.4);
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 50px;
+    color: white;
+    box-sizing: border-box;
+  }
 
-.content h1 {
-  font-size: 48px;
-  margin: 0 0 20px;
-  text-shadow: 2px 2px 8px rgba(0,0,0,0.8);
-}
+  .content h1 {
+    font-size: 48px;
+    margin: 0 0 20px;
+    text-shadow: 2px 2px 8px rgba(0,0,0,0.8);
+  }
 
-.content p {
-  max-width: 400px;
-  line-height: 1.5;
-  text-shadow: 1px 1px 5px rgba(0,0,0,0.7);
-}
+  .content p {
+    max-width: 400px;
+    line-height: 1.5;
+    text-shadow: 1px 1px 5px rgba(0,0,0,0.7);
+  }
 
-.login-box {
-  width: 300px;
-  background: rgba(255, 255, 255, 0.2);
-  padding: 20px;
-  border-radius: 10px;
-  backdrop-filter: blur(6px);
-  box-shadow: 0 4px 15px rgba(0,0,0,0.6);
-}
+  .login-box {
+    width: 300px;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 20px;
+    border-radius: 10px;
+    backdrop-filter: blur(6px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+  }
 
-.login-box h2 {
-  text-align: center;
-  margin-bottom: 15px;
-}
+  .login-box h2 {
+    text-align: center;
+    margin-bottom: 15px;
+  }
 
-.login-box input[type="text"],
-.login-box input[type="password"] {
-  width: 95%;
-  padding: 10px;
-  margin: 8px 0;
-  border: none;
-  border-radius: 5px;
-}
+  .login-box input[type="text"],
+  .login-box input[type="password"] {
+    width: 95%;
+    padding: 10px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 5px;
+  }
 
-.login-box label {
-  font-size: 14px;
-}
+  .login-box label {
+    font-size: 14px;
+  }
 
-.login-box button {
-  width: 100%;
-  padding: 10px;
+  .login-box button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    background: #c7a17a;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+  .login-box button:hover {
+    background: #b08968;
+  }
+
+  .login-box a {
+    display: block;
+    text-align: center;
+    margin-top: 10px;
+    color: white;
+    font-size: 14px;
+    text-decoration: none;
+  }
+
+  .register {
   margin-top: 10px;
-  background: #c7a17a;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-.login-box button:hover {
-  background: #b08968;
-}
-
-.login-box a {
-  display: block;
+  font-size: 13px;
   text-align: center;
-  margin-top: 10px;
-  color: white;
-  font-size: 14px;
-  text-decoration: none;
-}
+  }
+
+  .register a {
+    color: #ffd7a8;
+    font-weight: bold;
+  }
 </style>
 
 </head>
@@ -117,6 +128,11 @@ body {
 
         <button>Sign in now</button>
         <a href="#">Lost your password?</a>
+
+        <div class="register">
+          Belum punya akun?
+          <a href="register.php">Daftar di sini</a>
+        </div>
       </div>
     </form>
 
