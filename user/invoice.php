@@ -1,6 +1,6 @@
 <?php
 include '../koneksi.php';
-include '../header.php';
+include 'header.php';
 
 if (!isset($_SESSION['id_user'])) {
     header("Location: ../login.php"); exit;

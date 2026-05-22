@@ -8,7 +8,6 @@ if (!isset($_SESSION['id_user'])) {
 
 $id_user = (int)$_SESSION['id_user'];
 
-// Ambil semua booking milik user ini
 $sql = "SELECT 
             b.id_booking, b.total_harga, b.status, 
             p.nama_paket, p.harga,
@@ -27,22 +26,22 @@ $stmt->close();
 
 function badgeStyle($s) {
     $map = [
-        'pending'    => 'background:#fff3cd;color:#856404;',
-        'konfirmasi' => 'background:#d1ecf1;color:#0c5460;',
-        'selesai'    => 'background:#d4edda;color:#155724;',
-        'batal'      => 'background:#f8d7da;color:#721c24;',
+        '0' => 'background:#fff3cd;color:#856404;',
+        '1' => 'background:#d1ecf1;color:#0c5460;',
+        '2' => 'background:#d4edda;color:#155724;',
+        '3' => 'background:#f8d7da;color:#721c24;',
     ];
-    return $map[$s] ?? 'background:#eee;color:#555;';
+    return $map[(string)$s] ?? 'background:#eee;color:#555;';
 }
 
 function badgeLabel($s) {
     $map = [
-        'pending'    => '⏳ Menunggu',
-        'konfirmasi' => '✓ Dikonfirmasi',
-        'selesai'    => '✔ Selesai',
-        'batal'      => '✕ Dibatalkan',
+        '0' => '⏳ Menunggu Konfirmasi',
+        '1' => '✓ Diterima',
+        '2' => '✔ Selesai',
+        '3' => '✕ Dibatalkan',
     ];
-    return $map[$s] ?? ucfirst($s);
+    return $map[(string)$s] ?? 'Status ' . $s;
 }
 ?>
 <!DOCTYPE html>
@@ -81,26 +80,29 @@ function badgeLabel($s) {
     .item-body { padding: 16px 20px; }
 
     .item-grid {
-      display: grid; grid-template-columns: 1fr 1fr 1fr;
-      gap: 12px; margin-bottom: 14px;
+      display: grid; grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 12px; margin-bottom: 14px; align-items: center;
     }
 
     .item-info .lbl { font-size: 11px; color: #aaa; font-weight: 600; text-transform: uppercase; margin-bottom: 3px; }
     .item-info .val { font-size: 14px; font-weight: 600; color: #222; }
 
-    .item-footer {
-      display: flex; justify-content: space-between; align-items: center;
-      padding-top: 12px; border-top: 1px solid #f0f0f0;
-    }
-
-    .badge {
-      padding: 5px 14px; border-radius: 20px;
+    /* Status badge inline */
+    .status-inline {
+      display: inline-block;
+      padding: 5px 12px; border-radius: 20px;
       font-size: 12px; font-weight: 700;
     }
 
-    .total { font-size: 16px; font-weight: 700; color: #2daae1; }
+    .item-footer {
+      display: flex; justify-content: space-between; align-items: center;
+      padding-top: 12px; border-top: 1px solid #f0f0f0;
+      flex-wrap: wrap; gap: 10px;
+    }
 
-    .btn-wrap { display: flex; gap: 8px; }
+    .total { font-size: 17px; font-weight: 700; color: #2daae1; }
+
+    .btn-wrap { display: flex; gap: 8px; flex-wrap: wrap; }
     .btn {
       padding: 8px 18px; border-radius: 20px; border: none;
       font-size: 12px; font-weight: 700; cursor: pointer;
@@ -110,6 +112,21 @@ function badgeLabel($s) {
     .btn:hover { opacity: 0.85; }
     .btn-cek     { background: #2daae1; color: white; }
     .btn-invoice { background: #3a7d44; color: white; }
+    .btn-bayar   { background: #f6ad55; color: white; animation: glow 1.5s infinite; }
+
+    @keyframes glow {
+      0%,100% { box-shadow: 0 0 0 0 rgba(246,173,85,0.4); }
+      50%      { box-shadow: 0 0 0 8px rgba(246,173,85,0); }
+    }
+
+    /* Notif konfirmasi */
+    .notif-konfirm {
+      background: #d4edda; border: 1px solid #c3e6cb;
+      border-radius: 10px; padding: 12px 16px;
+      font-size: 13px; color: #155724; font-weight: 600;
+      margin-bottom: 10px;
+      display: flex; align-items: center; gap: 8px;
+    }
 
     .alasan-box {
       background: #fff5f5; border-left: 4px solid #e74c3c;
@@ -123,7 +140,11 @@ function badgeLabel($s) {
     }
     .empty svg { width: 60px; height: 60px; stroke: #ddd; margin-bottom: 14px; }
     .empty p { font-size: 14px; margin-bottom: 16px; }
-    .btn-pesan { background: #2daae1; color: white; padding: 11px 28px; border-radius: 25px; text-decoration: none; font-weight: 700; font-size: 13px; display: inline-block; }
+    .btn-pesan {
+      background: #2daae1; color: white; padding: 11px 28px;
+      border-radius: 25px; text-decoration: none;
+      font-weight: 700; font-size: 13px; display: inline-block;
+    }
 
     @media (max-width: 600px) {
       .item-grid { grid-template-columns: 1fr 1fr; }
@@ -148,6 +169,13 @@ function badgeLabel($s) {
           <span class="tgl"><?= date('d F Y', strtotime($row['tanggal'])) ?> · <?= date('H:i', strtotime($row['jam'])) ?> WIB</span>
         </div>
         <div class="item-body">
+
+          <?php if ($row['status'] === 'konfirmasi'): ?>
+          <div class="notif-konfirm">
+            ✓ Booking Anda telah dikonfirmasi! Silakan selesaikan pembayaran.
+          </div>
+          <?php endif; ?>
+
           <div class="item-grid">
             <div class="item-info">
               <div class="lbl">Paket</div>
@@ -161,29 +189,41 @@ function badgeLabel($s) {
               <div class="lbl">Harga/pax</div>
               <div class="val">Rp <?= number_format($row['harga'], 0, ',', '.') ?></div>
             </div>
+            <div class="item-info">
+              <div class="lbl">Status</div>
+              <div class="val">
+                <span class="status-inline" style="<?= badgeStyle($row['status']) ?>">
+                  <?= badgeLabel($row['status']) ?>
+                </span>
+              </div>
+            </div>
           </div>
 
           <?php if ($row['status'] === 'batal' && !empty($row['alasan_batal'])): ?>
             <div class="alasan-box">
-              <strong>Alasan Batal:</strong> <?= htmlspecialchars($row['alasan_batal']) ?>
+              <strong>Alasan:</strong> <?= htmlspecialchars($row['alasan_batal']) ?>
             </div>
           <?php endif; ?>
 
+          <?php if ($row['status'] == '1'): ?>
+<div class="notif-konfirm" style="background:#fff3cd;border-color:#ffc107;color:#856404;">
+    💳 Booking Anda telah diterima! Mohon segera lakukan pembayaran.
+</div>
+<?php endif; ?>
           <div class="item-footer">
-            <div>
-              <span class="badge" style="<?= badgeStyle($row['status']) ?>">
-                <?= badgeLabel($row['status']) ?>
-              </span>
-              <div class="total" style="margin-top:6px;">Rp <?= number_format($row['total_harga'], 0, ',', '.') ?></div>
-            </div>
+            <div class="total">Rp <?= number_format($row['total_harga'], 0, ',', '.') ?></div>
             <div class="btn-wrap">
-              <?php if ($row['status'] === 'pending'): ?>
-                <a href="booking_tunggu.php?id=<?= $row['id_booking'] ?>" class="btn btn-cek">Cek Status</a>
-              <?php elseif (in_array($row['status'], ['konfirmasi','selesai'])): ?>
+              <?php if ($row['status'] == '0'): ?>
+                <a href="booking_tunggu.php?id=<?= $row['id_booking'] ?>" class="btn btn-cek">⏳ Cek Status</a>
+              <?php elseif ($row['status'] == '1'): ?>
+                <a href="transaksi.php?id=<?= $row['id_booking'] ?>" class="btn btn-bayar">💳 Bayar Sekarang</a>
+                <a href="invoice.php?id=<?= $row['id_booking'] ?>" class="btn btn-invoice">🧾 Invoice</a>
+              <?php elseif ($row['status'] == '2'): ?>
                 <a href="invoice.php?id=<?= $row['id_booking'] ?>" class="btn btn-invoice">🧾 Invoice</a>
               <?php endif; ?>
             </div>
           </div>
+
         </div>
       </div>
     <?php endwhile; else: ?>
