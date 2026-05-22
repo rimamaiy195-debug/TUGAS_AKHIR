@@ -30,6 +30,20 @@ while ($row = mysqli_fetch_assoc($query)) {
 }
 
 $today = date('Y-m-d');
+
+$kapasitas_harian = 50;
+
+$cek_full = mysqli_query($koneksi, "
+    SELECT j.tanggal, SUM(b.status != 3) AS total
+    FROM booking b
+    JOIN jadwal j ON b.id_jadwal = j.id_jadwal
+    GROUP BY j.tanggal
+");
+
+$full_data = [];
+while ($r = mysqli_fetch_assoc($cek_full)) {
+    $full_data[$r['tanggal']] = $r['total'];
+}
 ?>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet"/>
@@ -314,6 +328,16 @@ $today = date('Y-m-d');
     </table>
   </div>
 
+  <div class="stat-card">
+    <div class="stat-icon amber">
+      <svg viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2z"/></svg>
+    </div>
+    <div>
+      <div class="stat-num" id="stat-full">0</div>
+      <div class="stat-lbl">Hari FULL</div>
+    </div>
+  </div>
+
 </div>
 
 <div class="toast" id="toast"></div>
@@ -323,6 +347,9 @@ $today = date('Y-m-d');
   let currentFilter = -1;
   const TODAY       = '<?php echo $today; ?>';
 
+  let kapasitas = <?php echo $kapasitas_harian; ?>;
+  let fullData  = <?php echo json_encode($full_data); ?>;
+
   const statusLabel = ['Menunggu', 'Diterima', 'Selesai', 'Dibatalkan'];
 
   function formatTgl(d) {
@@ -330,6 +357,11 @@ $today = date('Y-m-d');
     const [y, m, day] = d.split('-');
     const months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
     return `${parseInt(day)} ${months[parseInt(m)-1]} ${y}`;
+  }
+
+  function isFull(tanggal) {
+  let total = fullData[tanggal] || 0;
+  return total >= kapasitas;
   }
 
   function updateStats() {
@@ -371,6 +403,12 @@ $today = date('Y-m-d');
               </td>
               <td>
                 <span class="tgl-text">${formatTgl(b.tgl)}</span>
+
+                ${isFull(b.tgl)
+                  ? '<span class="tgl-badge" style="background:#ef4444">FULL</span>'
+                  : '<span class="tgl-badge" style="background:#10b981">OPEN</span>'
+                }
+
                 ${isToday ? '<span class="tgl-badge">Hari ini</span>' : ''}
               </td>
               <td>${b.paket}</td>
@@ -424,6 +462,16 @@ $today = date('Y-m-d');
       showToast(msgs[status] || 'Status diperbarui.');
     })
     .catch(() => showToast('❌ Gagal mengubah status.'));
+  }
+
+  function updateStats() {
+
+  document.getElementById('stat-total').textContent   = bookings.length;
+  document.getElementById('stat-pending').textContent = bookings.filter(b => b.status === 0).length;
+  document.getElementById('stat-done').textContent    = bookings.filter(b => b.status === 2).length;
+
+  let fullDays = Object.keys(fullData).filter(tgl => fullData[tgl] >= kapasitas).length;
+  document.getElementById('stat-full').textContent = fullDays;
   }
 
   function showToast(msg) {

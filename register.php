@@ -54,7 +54,7 @@ body {
 }
 
 .form-box input {
-  width: 100%;
+  width: 95%;
   padding: 10px;
   margin: 8px 0;
   border: none;
@@ -117,6 +117,7 @@ body {
         <input type="text" name="nama" placeholder="Nama Lengkap" required>
         <input type="email" name="email" placeholder="Email Address" required>
         <input type="text" name="no_hp" placeholder="No HP" required>
+        <input type="text" name="alamat" placeholder="Alamat" required>
         <input type="password" name="password" placeholder="Password" required>
 
         <button type="submit" name="register">Daftar</button>
