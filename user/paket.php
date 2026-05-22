@@ -296,7 +296,7 @@
 
       <div class="right-section">
 
-        <div class="paket-card" onclick="pilihPaket(this, 'Fun Rafting', 135000)">
+        <div class="paket-card" onclick="pilihPaket(this, 'PAKET FUN RAFTING', 135000)">
           <div class="paket-title">
             PAKET FUN RAFTING
             <small>Jarak 4 KM (~1 - 1,5 jam)</small>
@@ -304,7 +304,7 @@
           <div class="paket-harga">135 Ribu <span>/pax</span></div>
         </div>
 
-        <div class="paket-card" onclick="pilihPaket(this, 'Medium', 175000)">
+        <div class="paket-card" onclick="pilihPaket(this, 'PAKET MEDIUM', 175000)">
           <div class="paket-title">
             PAKET MEDIUM
             <small>Jarak 12 km (~2,5 - 3 jam)</small>
@@ -312,7 +312,7 @@
           <div class="paket-harga">175 Ribu <span>/pax</span></div>
         </div>
 
-        <div class="paket-card" onclick="pilihPaket(this, 'Long Trip', 210000)">
+        <div class="paket-card" onclick="pilihPaket(this, 'PAKET LONG TRIP', 210000)">
           <div class="paket-title">
             PAKET LONG TRIP
             <small>Jarak 15 km (~3 - 3,5 jam)</small>
