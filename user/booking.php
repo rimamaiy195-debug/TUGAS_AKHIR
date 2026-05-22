@@ -117,7 +117,7 @@ $deskripsi = $deskripsi_map[strtoupper(trim($nama_paket))] ?? $paket['deskripsi'
     }
 
     .paket-banner-img2 { border-radius: 12px; overflow: hidden; }
-    .paket-banner-img2 img { width: 100%; height: 180px; object-fit: cover; display: block; }
+    .paket-banner-img2 img { width: 100%; height: 120px; object-fit: cover; display: block; }
 
     .paket-info-boxes { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
@@ -204,6 +204,18 @@ $deskripsi = $deskripsi_map[strtoupper(trim($nama_paket))] ?? $paket['deskripsi'
       .paket-banner { grid-template-columns: 1fr; }
       .paket-banner-main { grid-row: auto; }
     }
+
+    .guide-info{
+  background: white;
+  padding: 10px;
+  border-radius: 0 0 12px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+  text-align: center;
+  border: 1px solid #eee;
+  border-top: none;
+}
   </style>
 </head>
 <body>
@@ -219,8 +231,14 @@ $deskripsi = $deskripsi_map[strtoupper(trim($nama_paket))] ?? $paket['deskripsi'
           <img src="../images/1.jpg" alt="Rafting">
         </div>
         <div class="paket-banner-img2">
-          <img src="../images/7.jpg" alt="Rafting 2">
-        </div>
+  <img src="../images/15.jpg" alt="Rafting 2">
+
+  <div class="guide-info">
+    🚣 1 Boat maksimal 4 peserta <br>
+    🧑‍✈️ Didampingi 2 pembimbing profesional
+  </div>
+</div>
+        
         <div class="paket-info-boxes">
           <div class="info-box">Rp <?= number_format($paket['harga'], 0, ',', '.') ?><br>/pax</div>
           <div class="info-box"><?= $jarak ?></div>
@@ -273,6 +291,8 @@ $deskripsi = $deskripsi_map[strtoupper(trim($nama_paket))] ?? $paket['deskripsi'
     <option value="14:00">14:00</option>
     <option value="15:00">15:00</option>
     <option value="16:00">16:00</option>
+    <option value="16:00">17:00</option>
+    <option value="16:00">18:00</option>
   </select>
 </td>
           </tr>
@@ -313,7 +333,11 @@ $deskripsi = $deskripsi_map[strtoupper(trim($nama_paket))] ?? $paket['deskripsi'
         </div>
 
         <button type="submit" class="btn-booking">BOOKING</button>
+
       </form>
+      <div id="notif-penuh" style="display:none;background:#ffe5e5;border:1px solid #f5c6c6;color:#c0392b;border-radius:8px;padding:8px 12px;font-size:12px;margin-top:10px;">
+  ⚠ Booking di tanggal ini sudah penuh (maks. 50 orang). Silakan pilih tanggal lain.
+</div>
     </div>
 
   </div>
@@ -339,6 +363,28 @@ $deskripsi = $deskripsi_map[strtoupper(trim($nama_paket))] ?? $paket['deskripsi'
   function kurang() {
     if (jumlah > 1) { jumlah--; update(); }
   }
+
+  // Cek kapasitas tanggal
+document.querySelector('[name="tanggal"]').addEventListener('change', function() {
+  const tanggal = this.value;
+  const notif = document.getElementById('notif-penuh');
+  const btnBooking = document.querySelector('.btn-booking');
+  if (!tanggal) return;
+
+  fetch('cek_kapasitas.php?tanggal=' + tanggal)
+    .then(r => r.json())
+    .then(data => {
+      if (data.penuh) {
+        notif.style.display = 'block';
+        btnBooking.disabled = true;
+        btnBooking.style.opacity = '0.5';
+      } else {
+        notif.style.display = 'none';
+        btnBooking.disabled = false;
+        btnBooking.style.opacity = '1';
+      }
+    });
+});
 </script>
 </body>
 </html>
