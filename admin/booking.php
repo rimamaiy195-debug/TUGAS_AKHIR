@@ -31,14 +31,9 @@ while ($row = mysqli_fetch_assoc($query)) {
 
 $today = date('Y-m-d');
 
-$kapasitas_harian = 50;
+$kapasitas_harian = 2;
 
-$cek_full = mysqli_query($koneksi, "
-    SELECT j.tanggal, SUM(b.status != 3) AS total
-    FROM booking b
-    JOIN jadwal j ON b.id_jadwal = j.id_jadwal
-    GROUP BY j.tanggal
-");
+$cek_full = mysqli_query($koneksi, "SELECT j.tanggal, COUNT(*) AS total FROM booking b JOIN jadwal j ON b.id_jadwal = j.id_jadwal WHERE b.status != 3 GROUP BY j.tanggal");
 
 $full_data = [];
 while ($r = mysqli_fetch_assoc($cek_full)) {
@@ -343,143 +338,325 @@ while ($r = mysqli_fetch_assoc($cek_full)) {
 <div class="toast" id="toast"></div>
 
 <script>
-  let bookings      = <?php echo json_encode($bookings); ?>;
-  let currentFilter = -1;
-  const TODAY       = '<?php echo $today; ?>';
+let bookings = <?php echo json_encode($bookings); ?>;
+let currentFilter = -1;
+const TODAY = '<?php echo $today; ?>';
 
-  let kapasitas = <?php echo $kapasitas_harian; ?>;
-  let fullData  = <?php echo json_encode($full_data); ?>;
+let kapasitas = <?php echo $kapasitas_harian; ?>;
+let fullData = <?php echo json_encode($full_data); ?>;
 
-  const statusLabel = ['Menunggu', 'Diterima', 'Selesai', 'Dibatalkan'];
+const statusLabel = ['Menunggu','Diterima','Selesai','Dibatalkan'];
 
-  function formatTgl(d) {
-    if (!d) return '-';
-    const [y, m, day] = d.split('-');
+function formatTgl(d){
+    if(!d) return '-';
+
+    const [y,m,day] = d.split('-');
     const months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+
     return `${parseInt(day)} ${months[parseInt(m)-1]} ${y}`;
-  }
+}
 
-  function isFull(tanggal) {
-  let total = fullData[tanggal] || 0;
-  return total >= kapasitas;
-  }
+function isFull(tanggal){
+    return (fullData[tanggal] || 0) >= kapasitas;
+}
 
-  function updateStats() {
-    document.getElementById('stat-total').textContent   = bookings.length;
-    document.getElementById('stat-pending').textContent = bookings.filter(b => b.status === 0).length;
-    document.getElementById('stat-done').textContent    = bookings.filter(b => b.status === 2).length;
-  }
+function updateStats(){
 
-  function renderTable() {
-    const q      = document.getElementById('searchInput').value.toLowerCase();
-    const tglVal = document.getElementById('filterTgl').value;
+    document.getElementById('stat-total').textContent =
+        bookings.length;
 
-    const data = bookings.filter(b => {
-      const matchStatus = currentFilter === -1 || b.status === currentFilter;
-      const matchSearch = b.nama.toLowerCase().includes(q);
-      const matchTgl    = !tglVal || b.tgl === tglVal;
-      return matchStatus && matchSearch && matchTgl;
+    document.getElementById('stat-pending').textContent =
+        bookings.filter(b=>b.status===0).length;
+
+    document.getElementById('stat-done').textContent =
+        bookings.filter(b=>b.status===2).length;
+
+    let fullDays = Object.keys(fullData)
+        .filter(tgl => fullData[tgl] >= kapasitas)
+        .length;
+
+    document.getElementById('stat-full').textContent = fullDays;
+}
+
+function renderTable(){
+
+    const q = document.getElementById('searchInput')
+        .value.toLowerCase();
+
+    const tglVal =
+        document.getElementById('filterTgl').value;
+
+    const data = bookings.filter(b=>{
+
+        const matchStatus =
+            currentFilter === -1 ||
+            b.status === currentFilter;
+
+        const matchSearch =
+            b.nama.toLowerCase().includes(q);
+
+        const matchTgl =
+            !tglVal || b.tgl === tglVal;
+
+        return matchStatus &&
+               matchSearch &&
+               matchTgl;
     });
 
-    const strip = document.getElementById('infoStrip');
-    if (tglVal) {
-      const label = tglVal === TODAY ? 'Hari ini' : formatTgl(tglVal);
-      document.getElementById('infoText').textContent = `${label}: ditemukan ${data.length} booking`;
-      strip.classList.add('show');
-    } else {
-      strip.classList.remove('show');
+    const strip =
+        document.getElementById('infoStrip');
+
+    if(tglVal){
+
+        const label =
+            tglVal===TODAY
+            ? 'Hari ini'
+            : formatTgl(tglVal);
+
+        document.getElementById('infoText')
+        .textContent =
+            `${label}: ditemukan ${data.length} booking`;
+
+        strip.classList.add('show');
+
+    }else{
+        strip.classList.remove('show');
     }
 
-    document.getElementById('tableBody').innerHTML = data.length === 0
-      ? `<tr class="empty-row"><td colspan="6">Tidak ada booking untuk filter ini</td></tr>`
-      : data.map((b, i) => {
-          const isToday = b.tgl === TODAY;
-          return `
-            <tr class="${isToday ? 'today-row' : ''}">
-              <td>${i + 1}</td>
-              <td>
+    document.getElementById('tableBody').innerHTML =
+    data.length===0
+
+    ? `<tr class="empty-row">
+        <td colspan="6">
+            Tidak ada booking untuk filter ini
+        </td>
+       </tr>`
+
+    : data.map((b,i)=>{
+
+        const isToday = b.tgl===TODAY;
+
+        return `
+        <tr class="${isToday?'today-row':''}">
+
+            <td>${i+1}</td>
+
+            <td>
                 <div class="nama-text">${b.nama}</div>
                 <div class="hp-text">${b.hp}</div>
-              </td>
-              <td>
-                <span class="tgl-text">${formatTgl(b.tgl)}</span>
+            </td>
 
-                ${isFull(b.tgl)
-                  ? '<span class="tgl-badge" style="background:#ef4444">FULL</span>'
-                  : '<span class="tgl-badge" style="background:#10b981">OPEN</span>'
+            <td>
+
+                <span class="tgl-text">
+                    ${formatTgl(b.tgl)}
+                </span>
+
+                ${
+                    isFull(b.tgl)
+                    ? `<span class="tgl-badge" style="background:#ef4444">
+                        FULL
+                       </span>`
+                    : `<span class="tgl-badge">
+                        OPEN
+                       </span>`
                 }
 
-                ${isToday ? '<span class="tgl-badge">Hari ini</span>' : ''}
-              </td>
-              <td>${b.paket}</td>
-              <td><span class="badge badge-${b.status}">${statusLabel[b.status] ?? '-'}</span></td>
-              <td>
+                ${
+                    isToday
+                    ? `<span class="tgl-badge">
+                        Hari ini
+                       </span>`
+                    : ''
+                }
+
+            </td>
+
+            <td>${b.paket}</td>
+
+            <td>
+                <span class="badge badge-${b.status}">
+                    ${statusLabel[b.status]}
+                </span>
+            </td>
+
+            <td>
+
                 <div class="actions">
-                  ${b.status === 0 ? `<button class="btn-act btn-confirm" onclick="changeStatus(${b.id}, 1)">✔ Terima</button>` : ''}
-                  ${b.status === 1 ? `<button class="btn-act btn-done"    onclick="changeStatus(${b.id}, 2)">🏁 Selesai</button>` : ''}
-                  ${b.status !== 3 && b.status !== 2
-                    ? `<button class="btn-act btn-cancel" onclick="changeStatus(${b.id}, 3)">✖ Batal</button>` : ''}
+
+                    ${
+                        b.status===0
+                        ? `<button
+                            class="btn-act btn-confirm"
+                            onclick="changeStatus(${b.id},1)">
+                            ✔ Terima
+                           </button>`
+                        : ''
+                    }
+
+                    ${
+                        b.status===1
+                        ? `<button
+                            class="btn-act btn-done"
+                            onclick="changeStatus(${b.id},2)">
+                            🏁 Selesai
+                           </button>`
+                        : ''
+                    }
+
+                    ${
+                        b.status!==2 &&
+                        b.status!==3
+
+                        ? `<button
+                            class="btn-act btn-cancel"
+                            onclick="changeStatus(${b.id},3)">
+                            ✖ Batal
+                           </button>`
+                        : ''
+                    }
+
                 </div>
-              </td>
-            </tr>`;
-        }).join('');
+
+            </td>
+
+        </tr>
+        `;
+
+    }).join('');
 
     updateStats();
-  }
+}
 
-  function setFilter(f, el) {
+function setFilter(f,el){
+
     currentFilter = f;
-    document.querySelectorAll('.status-btn').forEach(b => b.classList.remove('active'));
+
+    document
+    .querySelectorAll('.status-btn')
+    .forEach(btn=>btn.classList.remove('active'));
+
     el.classList.add('active');
+
     renderTable();
-  }
+}
 
-  function setToday() {
-  document.getElementById('filterTgl').value = TODAY;
-  document.querySelector('.btn-today').classList.add('active');
-  document.querySelector('.btn-reset').classList.remove('active');
-  renderTable();
-  }
+function setToday(){
 
-  function resetTgl() {
-    document.getElementById('filterTgl').value = '';
-    document.querySelector('.btn-reset').classList.add('active');
-    document.querySelector('.btn-today').classList.remove('active');
+    document.getElementById('filterTgl').value =
+        TODAY;
+
+    document
+    .querySelector('.btn-today')
+    .classList.add('active');
+
+    document
+    .querySelector('.btn-reset')
+    .classList.remove('active');
+
     renderTable();
-  }
+}
 
-  function changeStatus(id, status) {
-    fetch('update_status.php', {
-      method:  'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body:    `id=${id}&status=${status}`
+function resetTgl(){
+
+    document.getElementById('filterTgl').value='';
+
+    document
+    .querySelector('.btn-reset')
+    .classList.add('active');
+
+    document
+    .querySelector('.btn-today')
+    .classList.remove('active');
+
+    renderTable();
+}
+
+function changeStatus(id,status){
+
+    fetch('update_status.php',{
+
+        method:'POST',
+
+        headers:{
+            'Content-Type':
+            'application/x-www-form-urlencoded'
+        },
+
+        body:`id=${id}&status=${status}`
     })
-    .then(res => {
-      if (!res.ok) throw new Error();
-      bookings = bookings.map(b => b.id == id ? { ...b, status } : b);
-      renderTable();
-      const msgs = { 1:'✅ Booking diterima!', 2:'🎉 Rafting selesai!', 3:'❌ Booking dibatalkan.' };
-      showToast(msgs[status] || 'Status diperbarui.');
+
+    .then(res=>{
+
+        if(!res.ok)
+            throw new Error();
+
+        const old =
+            bookings.find(b=>b.id==id);
+
+        bookings = bookings.map(b=>
+
+            b.id==id
+            ? {...b,status}
+            : b
+        );
+
+        if(old){
+
+            if(old.status===3 && status!==3){
+                fullData[old.tgl] =
+                    (fullData[old.tgl]||0)+1;
+            }
+
+            if(old.status!==3 && status===3){
+                fullData[old.tgl] =
+                    Math.max(
+                        0,
+                        (fullData[old.tgl]||0)-1
+                    );
+            }
+        }
+
+        renderTable();
+
+        const msgs = {
+            1:'✅ Booking diterima!',
+            2:'🎉 Rafting selesai!',
+            3:'❌ Booking dibatalkan.'
+        };
+
+        showToast(
+            msgs[status] ||
+            'Status diperbarui.'
+        );
     })
-    .catch(() => showToast('❌ Gagal mengubah status.'));
-  }
 
-  function updateStats() {
+    .catch(()=>{
 
-  document.getElementById('stat-total').textContent   = bookings.length;
-  document.getElementById('stat-pending').textContent = bookings.filter(b => b.status === 0).length;
-  document.getElementById('stat-done').textContent    = bookings.filter(b => b.status === 2).length;
+        showToast(
+            '❌ Gagal mengubah status.'
+        );
+    });
+}
 
-  let fullDays = Object.keys(fullData).filter(tgl => fullData[tgl] >= kapasitas).length;
-  document.getElementById('stat-full').textContent = fullDays;
-  }
+function showToast(msg){
 
-  function showToast(msg) {
-    const t = document.getElementById('toast');
+    const t =
+        document.getElementById('toast');
+
     t.textContent = msg;
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2800);
-  }
 
-  document.addEventListener('DOMContentLoaded', renderTable);
+    t.classList.add('show');
+
+    setTimeout(()=>{
+
+        t.classList.remove('show');
+
+    },2800);
+}
+
+document.addEventListener(
+    'DOMContentLoaded',
+    renderTable
+);
 </script>

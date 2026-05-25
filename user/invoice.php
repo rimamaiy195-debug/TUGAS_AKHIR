@@ -142,7 +142,7 @@ if ($data['status'] === 'batal') {
 <div class="wrapper">
 
   <div class="action-bar">
-    <a href="index.php" class="btn btn-home">← Kembali ke Home</a>
+    <a href="cek_booking.php" class="btn btn-home">← Kembali</a>
     <button class="btn btn-print" onclick="window.print()">🖨 Cetak Invoice</button>
   </div>
 
