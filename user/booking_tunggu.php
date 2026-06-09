@@ -10,7 +10,9 @@ $id_booking = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 if ($id_booking <= 0) { header("Location: paket.php"); exit; }
 
 $sql = "SELECT 
-            b.id_booking, b.total_harga, b.status, 
+            b.id_booking, 
+            b.total_harga, 
+            b.status,
             u.nama, u.no_hp,
             p.nama_paket, p.harga,
             j.tanggal, j.jam, j.jumlah
@@ -29,9 +31,12 @@ $stmt->close();
 if (!$data) { header("Location: paket.php"); exit; }
 
 // Kalau sudah dikonfirmasi → redirect ke invoice
-if ($data['status'] === 'konfirmasi' || $data['status'] === 'selesai') {
+// Kalau sudah dikonfirmasi → redirect ke invoice
+if ($data['status'] == '1' || $data['status'] == '2') {
     header("Location: invoice.php?id=$id_booking"); exit;
 }
+
+$dibatalkan = ($data['status'] == '3');
 
 $dibatalkan  = ($data['status'] === 'batal');
 $baru_konfirm = isset($_GET['notif']) && $_GET['notif'] === 'konfirmasi';
@@ -330,17 +335,11 @@ $baru_konfirm = isset($_GET['notif']) && $_GET['notif'] === 'konfirmasi';
 
   function tutupPopup() {
     document.getElementById('popupBatal').classList.remove('show');
-    document.getElementById('errAlasan').style.display = 'none';
-    document.getElementById('alasanInput').value = '';
+    
   }
 
   function konfirmasiBatal() {
-    const alasan = document.getElementById('alasanInput').value.trim();
-    if (!alasan) {
-      document.getElementById('errAlasan').style.display = 'block';
-      return;
-    }
-    document.getElementById('errAlasan').style.display = 'none';
+    
     document.getElementById('alasanInput').closest('form').submit();
   }
 </script>

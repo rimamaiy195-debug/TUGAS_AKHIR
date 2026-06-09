@@ -58,7 +58,7 @@ Pengertian arung jeram dalam kompetensi ini adalah:
 • Berdasarkan tenaga yang digunakan — Mengandalkan kekuatan dan kemampuan fisik dalam mendayung.
 • Berdasarkan jumlah awaknya — Berawak dua orang atau lebih dimana salah seorang bertindak sebagai pengemudi.';
 
-$deskripsi = !empty($paket['deskripsi']) ? $paket['deskripsi'] : $deskripsi_default;
+$deskripsi = $deskripsi_default;
 ?>
 <!DOCTYPE html>
 <html lang="id">
