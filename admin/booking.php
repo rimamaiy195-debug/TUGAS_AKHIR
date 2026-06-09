@@ -69,7 +69,7 @@ while ($r = mysqli_fetch_assoc($cek_full)) {
   .page-header p  { font-size: .8rem !important; color: #64748b !important; margin-top: 3px !important; margin-bottom: 0 !important; }
 
   .stats {
-    display: grid !important; grid-template-columns: repeat(3, 1fr) !important;
+    display: grid !important; grid-template-columns: repeat(4, 1fr) !important;
     gap: 16px !important; margin-bottom: 24px !important;
   }
   .stat-card {
@@ -83,9 +83,10 @@ while ($r = mysqli_fetch_assoc($cek_full)) {
     flex-shrink: 0 !important;
   }
   .stat-icon svg { width: 24px !important; height: 24px !important; fill: #fff !important; }
-  .stat-icon.blue  { background: #0d4f6c !important; }
-  .stat-icon.amber { background: #f59e0b !important; }
-  .stat-icon.green { background: #10b981 !important; }
+  .stat-icon.blue   { background: #0d4f6c !important; }
+  .stat-icon.amber  { background: #f59e0b !important; }
+  .stat-icon.green  { background: #10b981 !important; }
+  .stat-icon.purple { background: #8b5cf6 !important; }
   .stat-num { font-size: 1.7rem !important; font-weight: 700 !important; line-height: 1 !important; color: #1e293b !important; }
   .stat-lbl { font-size: .75rem !important; color: #64748b !important; margin-top: 4px !important; font-weight: 500 !important; }
 
@@ -111,10 +112,10 @@ while ($r = mysqli_fetch_assoc($cek_full)) {
   }
 
   .btn-today {
-  padding: 7px 14px; border-radius: 8px;
-  border: 1.5px solid #cbd5e1; background: #fff;
-  font-family: 'Poppins', sans-serif; font-size: .78rem; font-weight: 600;
-  color: #64748b; cursor: pointer; transition: all .2s;
+    padding: 7px 14px; border-radius: 8px;
+    border: 1.5px solid #cbd5e1; background: #fff;
+    font-family: 'Poppins', sans-serif; font-size: .78rem; font-weight: 600;
+    color: #64748b; cursor: pointer; transition: all .2s;
   }
   .btn-today.active {
     background: #0d4f6c !important; color: #fff !important; border-color: #0d4f6c !important;
@@ -127,11 +128,8 @@ while ($r = mysqli_fetch_assoc($cek_full)) {
     color: #64748b !important; cursor: pointer !important; text-decoration: none !important;
   }
   .btn-reset:hover { border-color: #0d4f6c !important; color: #0d4f6c !important; }
-
   .btn-reset.active {
-  background: #0d4f6c !important;
-  color: #fff !important;
-  border-color: #0d4f6c !important;
+    background: #0d4f6c !important; color: #fff !important; border-color: #0d4f6c !important;
   }
 
   .toolbar-divider { width: 1px !important; height: 30px !important; background: #e2e8f0 !important; }
@@ -204,11 +202,13 @@ while ($r = mysqli_fetch_assoc($cek_full)) {
     vertical-align: middle !important;
   }
 
+  /* status badges — 0=Menunggu 1=Diterima 2=Selesai 3=Dibatalkan 4=Lunas */
   .badge { display: inline-block !important; padding: 4px 12px !important; border-radius: 20px !important; font-size: .7rem !important; font-weight: 700 !important; }
   .badge-0 { background: #fef9c3 !important; color: #a16207 !important; }
   .badge-1 { background: #d1fae5 !important; color: #065f46 !important; }
   .badge-2 { background: #e0e7ff !important; color: #3730a3 !important; }
   .badge-3 { background: #fee2e2 !important; color: #991b1b !important; }
+  .badge-4 { background: #ede9fe !important; color: #5b21b6 !important; }
 
   .actions { display: flex !important; gap: 6px !important; flex-wrap: wrap !important; }
   .btn-act {
@@ -217,10 +217,53 @@ while ($r = mysqli_fetch_assoc($cek_full)) {
     cursor: pointer !important;
   }
   .btn-confirm { background: #d1fae5 !important; color: #065f46 !important; }
+  .btn-lunas   { background: #ede9fe !important; color: #5b21b6 !important; }
   .btn-done    { background: #e0e7ff !important; color: #3730a3 !important; }
   .btn-cancel  { background: #fee2e2 !important; color: #991b1b !important; }
 
   .empty-row td { text-align: center !important; padding: 40px !important; color: #94a3b8 !important; font-size: .85rem !important; }
+
+  /* MODAL */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,.45); z-index: 998;
+    align-items: center; justify-content: center;
+  }
+  .modal-overlay.show { display: flex !important; }
+  .modal-box {
+    background: #fff; border-radius: 16px; padding: 28px 28px 22px;
+    max-width: 400px; width: 90%;
+    box-shadow: 0 8px 32px rgba(0,0,0,.15);
+  }
+  .modal-icon { font-size: 2.2rem; text-align: center; margin-bottom: 10px; }
+  .modal-title {
+    font-size: 1rem; font-weight: 700; color: #1e293b;
+    margin: 0 0 8px; text-align: center;
+  }
+  .modal-body {
+    font-size: .82rem; color: #64748b;
+    text-align: center; margin: 0; line-height: 1.6;
+  }
+  .modal-full-warn {
+    display: none; background: #fef2f2;
+    border: 1px solid #fecaca; border-radius: 8px;
+    padding: 10px 14px; margin: 14px 0 0;
+    font-size: .78rem; color: #991b1b;
+    font-weight: 600; text-align: center; line-height: 1.5;
+  }
+  .modal-full-warn.show { display: block !important; }
+  .modal-full-warn span { font-weight: 400; font-size: .75rem; display: block; margin-top: 3px; }
+  .modal-actions { display: flex; gap: 10px; margin-top: 20px; }
+  .modal-actions button {
+    flex: 1; padding: 9px; border-radius: 8px;
+    font-family: 'Poppins', sans-serif; font-size: .82rem;
+    font-weight: 600; cursor: pointer;
+  }
+  .modal-btn-cancel-act {
+    border: 1.5px solid #cbd5e1; background: #fff; color: #64748b;
+  }
+  .modal-btn-cancel-act:hover { border-color: #0d4f6c; color: #0d4f6c; }
+  .modal-btn-ok { border: none; color: #fff; }
 
   .toast {
     position: fixed !important; bottom: 24px !important; right: 24px !important;
@@ -248,6 +291,7 @@ while ($r = mysqli_fetch_assoc($cek_full)) {
     </div>
   </div>
 
+  <!-- STATS — 4 kartu -->
   <div class="stats">
     <div class="stat-card">
       <div class="stat-icon blue">
@@ -265,6 +309,15 @@ while ($r = mysqli_fetch_assoc($cek_full)) {
       <div>
         <div class="stat-num" id="stat-pending">0</div>
         <div class="stat-lbl">Menunggu Konfirmasi</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon purple">
+        <svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+      </div>
+      <div>
+        <div class="stat-num" id="stat-lunas">0</div>
+        <div class="stat-lbl">Sudah Bayar (Lunas)</div>
       </div>
     </div>
     <div class="stat-card">
@@ -291,6 +344,7 @@ while ($r = mysqli_fetch_assoc($cek_full)) {
     <button class="status-btn active" onclick="setFilter(-1, this)">Semua</button>
     <button class="status-btn" onclick="setFilter(0, this)">Menunggu</button>
     <button class="status-btn" onclick="setFilter(1, this)">Diterima</button>
+    <button class="status-btn" onclick="setFilter(4, this)">Lunas</button>
     <button class="status-btn" onclick="setFilter(2, this)">Selesai</button>
     <button class="status-btn" onclick="setFilter(3, this)">Dibatalkan</button>
 
@@ -323,340 +377,279 @@ while ($r = mysqli_fetch_assoc($cek_full)) {
     </table>
   </div>
 
-  <div class="stat-card">
-    <div class="stat-icon amber">
-      <svg viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2z"/></svg>
-    </div>
-    <div>
-      <div class="stat-num" id="stat-full">0</div>
-      <div class="stat-lbl">Hari FULL</div>
+  <div style="margin-top:16px">
+    <div class="stat-card" style="max-width:220px">
+      <div class="stat-icon amber">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2z"/></svg>
+      </div>
+      <div>
+        <div class="stat-num" id="stat-full">0</div>
+        <div class="stat-lbl">Hari FULL</div>
+      </div>
     </div>
   </div>
 
 </div>
 
+<!-- CONFIRMATION MODAL -->
+<div class="modal-overlay" id="confirmModal">
+  <div class="modal-box">
+    <div class="modal-icon" id="modalIcon"></div>
+    <h3 class="modal-title" id="modalTitle"></h3>
+    <p class="modal-body" id="modalBody"></p>
+    <div class="modal-full-warn" id="modalFullWarn">
+      ⚠️ Perhatian: Hari ini sudah <strong>PENUH</strong>!
+      <span id="modalFullDetail"></span>
+    </div>
+    <div class="modal-actions">
+      <button class="modal-btn-cancel-act" onclick="closeModal()">Batal</button>
+      <button class="modal-btn-ok" id="modalConfirmBtn"></button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
-let bookings = <?php echo json_encode($bookings); ?>;
+let bookings      = <?php echo json_encode($bookings); ?>;
 let currentFilter = -1;
-const TODAY = '<?php echo $today; ?>';
+const TODAY       = '<?php echo $today; ?>';
+let kapasitas     = <?php echo $kapasitas_harian; ?>;
+let fullData      = <?php echo json_encode($full_data); ?>;
+let pendingAction = null;
 
-let kapasitas = <?php echo $kapasitas_harian; ?>;
-let fullData = <?php echo json_encode($full_data); ?>;
+// 0=Menunggu 1=Diterima 2=Selesai 3=Dibatalkan 4=Lunas
+const statusLabel = ['Menunggu', 'Diterima', 'Selesai', 'Dibatalkan', 'Lunas'];
 
-const statusLabel = ['Menunggu','Diterima','Selesai','Dibatalkan'];
-
-function formatTgl(d){
-    if(!d) return '-';
-
-    const [y,m,day] = d.split('-');
+function formatTgl(d) {
+    if (!d) return '-';
+    const [y, m, day] = d.split('-');
     const months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
-
     return `${parseInt(day)} ${months[parseInt(m)-1]} ${y}`;
 }
 
-function isFull(tanggal){
+function isDayFull(tanggal) {
     return (fullData[tanggal] || 0) >= kapasitas;
 }
 
-function updateStats(){
-
-    document.getElementById('stat-total').textContent =
-        bookings.length;
-
-    document.getElementById('stat-pending').textContent =
-        bookings.filter(b=>b.status===0).length;
-
-    document.getElementById('stat-done').textContent =
-        bookings.filter(b=>b.status===2).length;
-
-    let fullDays = Object.keys(fullData)
-        .filter(tgl => fullData[tgl] >= kapasitas)
-        .length;
-
-    document.getElementById('stat-full').textContent = fullDays;
+function updateStats() {
+    document.getElementById('stat-total').textContent   = bookings.length;
+    document.getElementById('stat-pending').textContent = bookings.filter(b => b.status === 0).length;
+    document.getElementById('stat-lunas').textContent   = bookings.filter(b => b.status === 4).length;
+    document.getElementById('stat-done').textContent    = bookings.filter(b => b.status === 2).length;
+    const fullDays = Object.keys(fullData).filter(tgl => fullData[tgl] >= kapasitas).length;
+    document.getElementById('stat-full').textContent    = fullDays;
 }
 
-function renderTable(){
+function renderTable() {
+    const q      = document.getElementById('searchInput').value.toLowerCase();
+    const tglVal = document.getElementById('filterTgl').value;
 
-    const q = document.getElementById('searchInput')
-        .value.toLowerCase();
-
-    const tglVal =
-        document.getElementById('filterTgl').value;
-
-    const data = bookings.filter(b=>{
-
-        const matchStatus =
-            currentFilter === -1 ||
-            b.status === currentFilter;
-
-        const matchSearch =
-            b.nama.toLowerCase().includes(q);
-
-        const matchTgl =
-            !tglVal || b.tgl === tglVal;
-
-        return matchStatus &&
-               matchSearch &&
-               matchTgl;
+    const data = bookings.filter(b => {
+        const matchStatus = currentFilter === -1 || b.status === currentFilter;
+        const matchSearch = b.nama.toLowerCase().includes(q);
+        const matchTgl    = !tglVal || b.tgl === tglVal;
+        return matchStatus && matchSearch && matchTgl;
     });
 
-    const strip =
-        document.getElementById('infoStrip');
-
-    if(tglVal){
-
-        const label =
-            tglVal===TODAY
-            ? 'Hari ini'
-            : formatTgl(tglVal);
-
-        document.getElementById('infoText')
-        .textContent =
-            `${label}: ditemukan ${data.length} booking`;
-
+    const strip = document.getElementById('infoStrip');
+    if (tglVal) {
+        const label = tglVal === TODAY ? 'Hari ini' : formatTgl(tglVal);
+        document.getElementById('infoText').textContent = `${label}: ditemukan ${data.length} booking`;
         strip.classList.add('show');
-
-    }else{
+    } else {
         strip.classList.remove('show');
     }
 
-    document.getElementById('tableBody').innerHTML =
-    data.length===0
+    document.getElementById('tableBody').innerHTML = data.length === 0
+        ? `<tr class="empty-row"><td colspan="6">Tidak ada booking untuk filter ini</td></tr>`
+        : data.map((b, i) => {
+            const isToday = b.tgl === TODAY;
+            const full    = isDayFull(b.tgl);
 
-    ? `<tr class="empty-row">
-        <td colspan="6">
-            Tidak ada booking untuk filter ini
-        </td>
-       </tr>`
+            // Tombol bayar (Lunas) muncul jika status bukan Selesai & bukan Dibatalkan & belum Lunas
+            const showBayar  = b.status !== 2 && b.status !== 3 && b.status !== 4;
+            // Tombol Terima hanya dari Menunggu
+            const showTerima = b.status === 0;
+            // Tombol Selesai hanya dari Lunas
+            const showSelesai = b.status === 4;
+            // Tombol Batal selama belum Selesai & belum Dibatalkan
+            const showBatal  = b.status !== 2 && b.status !== 3;
 
-    : data.map((b,i)=>{
-
-        const isToday = b.tgl===TODAY;
-
-        return `
-        <tr class="${isToday?'today-row':''}">
-
-            <td>${i+1}</td>
-
-            <td>
-                <div class="nama-text">${b.nama}</div>
-                <div class="hp-text">${b.hp}</div>
-            </td>
-
-            <td>
-
-                <span class="tgl-text">
-                    ${formatTgl(b.tgl)}
-                </span>
-
-                ${
-                    isFull(b.tgl)
-                    ? `<span class="tgl-badge" style="background:#ef4444">
-                        FULL
-                       </span>`
-                    : `<span class="tgl-badge">
-                        OPEN
-                       </span>`
-                }
-
-                ${
-                    isToday
-                    ? `<span class="tgl-badge">
-                        Hari ini
-                       </span>`
-                    : ''
-                }
-
-            </td>
-
-            <td>${b.paket}</td>
-
-            <td>
-                <span class="badge badge-${b.status}">
-                    ${statusLabel[b.status]}
-                </span>
-            </td>
-
-            <td>
-
-                <div class="actions">
-
-                    ${
-                        b.status===0
-                        ? `<button
-                            class="btn-act btn-confirm"
-                            onclick="changeStatus(${b.id},1)">
-                            ✔ Terima
-                           </button>`
-                        : ''
+            return `
+            <tr class="${isToday ? 'today-row' : ''}">
+                <td>${i + 1}</td>
+                <td>
+                    <div class="nama-text">${b.nama}</div>
+                    <div class="hp-text">${b.hp}</div>
+                </td>
+                <td>
+                    <span class="tgl-text">${formatTgl(b.tgl)}</span>
+                    ${full
+                        ? `<span class="tgl-badge" style="background:#ef4444">FULL</span>`
+                        : `<span class="tgl-badge">OPEN</span>`
                     }
-
-                    ${
-                        b.status===1
-                        ? `<button
-                            class="btn-act btn-done"
-                            onclick="changeStatus(${b.id},2)">
-                            🏁 Selesai
-                           </button>`
-                        : ''
-                    }
-
-                    ${
-                        b.status!==2 &&
-                        b.status!==3
-
-                        ? `<button
-                            class="btn-act btn-cancel"
-                            onclick="changeStatus(${b.id},3)">
-                            ✖ Batal
-                           </button>`
-                        : ''
-                    }
-
-                </div>
-
-            </td>
-
-        </tr>
-        `;
-
-    }).join('');
+                    ${isToday ? `<span class="tgl-badge">Hari ini</span>` : ''}
+                </td>
+                <td>${b.paket}</td>
+                <td><span class="badge badge-${b.status}">${statusLabel[b.status]}</span></td>
+                <td>
+                    <div class="actions">
+                        ${showTerima  ? `<button class="btn-act btn-confirm" onclick="changeStatus(${b.id},1)">✔ Terima</button>` : ''}
+                        ${showBayar   ? `<button class="btn-act btn-lunas"   onclick="changeStatus(${b.id},4)">💰 Lunas</button>` : ''}
+                        ${showSelesai ? `<button class="btn-act btn-done"    onclick="changeStatus(${b.id},2)">🏁 Selesai</button>` : ''}
+                        ${showBatal   ? `<button class="btn-act btn-cancel"  onclick="changeStatus(${b.id},3)">✖ Batal</button>` : ''}
+                    </div>
+                </td>
+            </tr>`;
+        }).join('');
 
     updateStats();
 }
 
-function setFilter(f,el){
-
+function setFilter(f, el) {
     currentFilter = f;
-
-    document
-    .querySelectorAll('.status-btn')
-    .forEach(btn=>btn.classList.remove('active'));
-
+    document.querySelectorAll('.status-btn').forEach(btn => btn.classList.remove('active'));
     el.classList.add('active');
-
     renderTable();
 }
 
-function setToday(){
-
-    document.getElementById('filterTgl').value =
-        TODAY;
-
-    document
-    .querySelector('.btn-today')
-    .classList.add('active');
-
-    document
-    .querySelector('.btn-reset')
-    .classList.remove('active');
-
+function setToday() {
+    document.getElementById('filterTgl').value = TODAY;
+    document.querySelector('.btn-today').classList.add('active');
+    document.querySelector('.btn-reset').classList.remove('active');
     renderTable();
 }
 
-function resetTgl(){
-
-    document.getElementById('filterTgl').value='';
-
-    document
-    .querySelector('.btn-reset')
-    .classList.add('active');
-
-    document
-    .querySelector('.btn-today')
-    .classList.remove('active');
-
+function resetTgl() {
+    document.getElementById('filterTgl').value = '';
+    document.querySelector('.btn-reset').classList.add('active');
+    document.querySelector('.btn-today').classList.remove('active');
     renderTable();
 }
 
-function changeStatus(id,status){
+/* ---- MODAL ---- */
+function changeStatus(id, status) {
+    const booking = bookings.find(b => b.id == id);
+    if (!booking) return;
 
-    fetch('update_status.php',{
+    const full = isDayFull(booking.tgl);
 
-        method:'POST',
-
-        headers:{
-            'Content-Type':
-            'application/x-www-form-urlencoded'
+    const config = {
+        1: {
+            icon: '✅',
+            title: 'Konfirmasi Terima Booking?',
+            body: `Booking atas nama <strong>${booking.nama}</strong><br>pada ${formatTgl(booking.tgl)} akan diterima.<br><small style="color:#94a3b8">Pelanggan belum melakukan pembayaran.</small>`,
+            btnLabel: 'Ya, Terima',
+            btnColor: '#10b981',
+            showFull: full
         },
+        4: {
+            icon: '💰',
+            title: 'Konfirmasi Pembayaran Lunas?',
+            body: `Pelanggan <strong>${booking.nama}</strong><br>pada ${formatTgl(booking.tgl)} sudah melunasi pembayaran?`,
+            btnLabel: 'Ya, Sudah Lunas',
+            btnColor: '#8b5cf6',
+            showFull: false
+        },
+        2: {
+            icon: '🏁',
+            title: 'Tandai Selesai?',
+            body: `Rafting atas nama <strong>${booking.nama}</strong><br>pada ${formatTgl(booking.tgl)} sudah selesai?`,
+            btnLabel: 'Ya, Selesai',
+            btnColor: '#6366f1',
+            showFull: false
+        },
+        3: {
+            icon: '❌',
+            title: 'Batalkan Booking?',
+            body: `Booking atas nama <strong>${booking.nama}</strong><br>pada ${formatTgl(booking.tgl)} akan dibatalkan.`,
+            btnLabel: 'Ya, Batalkan',
+            btnColor: '#ef4444',
+            showFull: false
+        }
+    };
 
-        body:`id=${id}&status=${status}`
+    const c = config[status];
+    if (!c) return;
+
+    document.getElementById('modalIcon').textContent  = c.icon;
+    document.getElementById('modalTitle').textContent = c.title;
+    document.getElementById('modalBody').innerHTML    = c.body;
+
+    const warnEl   = document.getElementById('modalFullWarn');
+    const detailEl = document.getElementById('modalFullDetail');
+    if (c.showFull) {
+        detailEl.textContent = `Kuota ${kapasitas} peserta untuk ${formatTgl(booking.tgl)} sudah terpenuhi.`;
+        warnEl.classList.add('show');
+    } else {
+        warnEl.classList.remove('show');
+    }
+
+    const btn = document.getElementById('modalConfirmBtn');
+    btn.textContent      = c.btnLabel;
+    btn.style.background = c.btnColor;
+
+    pendingAction = { id, status };
+    document.getElementById('confirmModal').classList.add('show');
+}
+
+function closeModal() {
+    document.getElementById('confirmModal').classList.remove('show');
+    pendingAction = null;
+}
+
+document.getElementById('modalConfirmBtn').addEventListener('click', function () {
+    if (!pendingAction) return;
+    const { id, status } = pendingAction;
+    closeModal();
+    doChangeStatus(id, status);
+});
+
+document.getElementById('confirmModal').addEventListener('click', function (e) {
+    if (e.target === this) closeModal();
+});
+
+function doChangeStatus(id, status) {
+    fetch('update_status.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `id=${id}&status=${status}`
     })
+    .then(res => {
+        if (!res.ok) throw new Error();
 
-    .then(res=>{
+        const old = bookings.find(b => b.id == id);
+        bookings  = bookings.map(b => b.id == id ? { ...b, status } : b);
 
-        if(!res.ok)
-            throw new Error();
-
-        const old =
-            bookings.find(b=>b.id==id);
-
-        bookings = bookings.map(b=>
-
-            b.id==id
-            ? {...b,status}
-            : b
-        );
-
-        if(old){
-
-            if(old.status===3 && status!==3){
-                fullData[old.tgl] =
-                    (fullData[old.tgl]||0)+1;
+        if (old) {
+            if (old.status === 3 && status !== 3) {
+                fullData[old.tgl] = (fullData[old.tgl] || 0) + 1;
             }
-
-            if(old.status!==3 && status===3){
-                fullData[old.tgl] =
-                    Math.max(
-                        0,
-                        (fullData[old.tgl]||0)-1
-                    );
+            if (old.status !== 3 && status === 3) {
+                fullData[old.tgl] = Math.max(0, (fullData[old.tgl] || 0) - 1);
             }
         }
 
         renderTable();
 
         const msgs = {
-            1:'✅ Booking diterima!',
-            2:'🎉 Rafting selesai!',
-            3:'❌ Booking dibatalkan.'
+            1: '✅ Booking diterima!',
+            4: '💰 Pembayaran dikonfirmasi, status Lunas!',
+            2: '🎉 Rafting selesai!',
+            3: '❌ Booking dibatalkan.'
         };
-
-        showToast(
-            msgs[status] ||
-            'Status diperbarui.'
-        );
+        showToast(msgs[status] || 'Status diperbarui.');
     })
-
-    .catch(()=>{
-
-        showToast(
-            '❌ Gagal mengubah status.'
-        );
-    });
+    .catch(() => showToast('❌ Gagal mengubah status.'));
 }
 
-function showToast(msg){
-
-    const t =
-        document.getElementById('toast');
-
+function showToast(msg) {
+    const t = document.getElementById('toast');
     t.textContent = msg;
-
     t.classList.add('show');
-
-    setTimeout(()=>{
-
-        t.classList.remove('show');
-
-    },2800);
+    setTimeout(() => t.classList.remove('show'), 2800);
 }
 
-document.addEventListener(
-    'DOMContentLoaded',
-    renderTable
-);
+document.addEventListener('DOMContentLoaded', renderTable);
 </script>
