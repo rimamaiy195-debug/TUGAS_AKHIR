@@ -127,16 +127,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$pembayaran) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pembayaran Booking · Rafting Singorojo</title>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'DM Sans', sans-serif; background: #f0f7ff; min-height: 100vh; padding: 2rem 1rem; }
-    .wrap { max-width: 520px; width: 100%; margin: 0 auto; }
+    
+.wrap { 
+  max-width: 600px; 
+  width: 100%; 
+  margin: 2rem auto; 
+  padding: 0 1rem;
+}
     .wrap { max-width: 520px; width: 100%; }
     .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 1.25rem; }
     .brand-icon { width: 40px; height: 40px; background: #1565c0; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 20px; }
     .brand-name { font-size: 18px; font-weight: 500; color: #1a1a2e; }
     .brand-sub { font-size: 12px; color: #888; }
+    
     .section-label { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: #aaa; margin-bottom: 10px; }
     .card { background: #fff; border: 1px solid #e0eaff; border-radius: 14px; padding: 1.25rem; margin-bottom: 1rem; }
     .banner-ok { background: #e8f5e9; border: 1px solid #a5d6a7; border-radius: 10px; padding: 12px 16px; display: flex; align-items: flex-start; gap: 10px; margin-bottom: 1rem; }
