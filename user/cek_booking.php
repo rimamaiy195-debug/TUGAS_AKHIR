@@ -24,12 +24,30 @@ $stmt->execute();
 $result = $stmt->get_result();
 $stmt->close();
 
+$kapasitas_harian = 2;
+$cek_full = $koneksi->query("
+    SELECT j.tanggal, COUNT(*) AS total
+    FROM booking b
+    JOIN jadwal j ON b.id_jadwal = j.id_jadwal
+    WHERE b.status != 3
+    GROUP BY j.tanggal
+");
+$full_data = [];
+while ($r = $cek_full->fetch_assoc()) {
+    $full_data[$r['tanggal']] = (int)$r['total'];
+}
+
+function isHariPenuh($tanggal, $full_data, $kapasitas) {
+    return ($full_data[$tanggal] ?? 0) >= $kapasitas;
+}
+
 function badgeStyle($s) {
     $map = [
         '0' => 'background:#fff3cd;color:#856404;',
         '1' => 'background:#d1ecf1;color:#0c5460;',
         '2' => 'background:#d4edda;color:#155724;',
         '3' => 'background:#f8d7da;color:#721c24;',
+        '4' => 'background:#ede9fe;color:#5b21b6;',
     ];
     return $map[(string)$s] ?? 'background:#eee;color:#555;';
 }
@@ -40,6 +58,7 @@ function badgeLabel($s) {
         '1' => '✓ Diterima',
         '2' => '✔ Selesai',
         '3' => '✕ Dibatalkan',
+        '4' => '💰 Lunas',
     ];
     return $map[(string)$s] ?? 'Status ' . $s;
 }
@@ -87,7 +106,6 @@ function badgeLabel($s) {
     .item-info .lbl { font-size: 11px; color: #aaa; font-weight: 600; text-transform: uppercase; margin-bottom: 3px; }
     .item-info .val { font-size: 14px; font-weight: 600; color: #222; }
 
-    /* Status badge inline */
     .status-inline {
       display: inline-block;
       padding: 5px 12px; border-radius: 20px;
@@ -110,16 +128,16 @@ function badgeLabel($s) {
       display: inline-block; transition: opacity 0.2s;
     }
     .btn:hover { opacity: 0.85; }
-    .btn-cek     { background: #2daae1; color: white; }
-    .btn-invoice { background: #3a7d44; color: white; }
-    .btn-bayar   { background: #f6ad55; color: white; animation: glow 1.5s infinite; }
+    .btn-cek      { background: #2daae1; color: white; }
+    .btn-invoice  { background: #3a7d44; color: white; }
+    .btn-bayar    { background: #f6ad55; color: white; animation: glow 1.5s infinite; }
+    .btn-reschedule { background: #f97316; color: white; }
 
     @keyframes glow {
       0%,100% { box-shadow: 0 0 0 0 rgba(246,173,85,0.4); }
       50%      { box-shadow: 0 0 0 8px rgba(246,173,85,0); }
     }
 
-    /* Notif konfirmasi */
     .notif-konfirm {
       background: #d4edda; border: 1px solid #c3e6cb;
       border-radius: 10px; padding: 12px 16px;
@@ -127,6 +145,28 @@ function badgeLabel($s) {
       margin-bottom: 10px;
       display: flex; align-items: center; gap: 8px;
     }
+
+    /* Notif HARI PENUH */
+    .notif-penuh {
+      background: #fff1f1;
+      border: 1.5px solid #f87171;
+      border-radius: 10px;
+      padding: 13px 16px;
+      margin-bottom: 12px;
+      display: flex; align-items: flex-start; gap: 10px;
+    }
+    .notif-penuh .icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+    .notif-penuh .teks { flex: 1; }
+    .notif-penuh .judul { font-size: 13px; font-weight: 700; color: #b91c1c; margin-bottom: 3px; }
+    .notif-penuh .sub { font-size: 12px; color: #ef4444; font-weight: 500; line-height: 1.5; }
+    .notif-penuh .btn-ganti {
+      margin-top: 8px; display: inline-block;
+      background: #ef4444; color: white;
+      padding: 6px 14px; border-radius: 20px;
+      font-size: 11px; font-weight: 700;
+      text-decoration: none; transition: opacity .2s;
+    }
+    .notif-penuh .btn-ganti:hover { opacity: .85; }
 
     .alasan-box {
       background: #fff5f5; border-left: 4px solid #e74c3c;
@@ -162,18 +202,37 @@ function badgeLabel($s) {
   <div class="booking-list">
     <?php if ($result && $result->num_rows > 0):
       while ($row = $result->fetch_assoc()):
+        $hari_penuh = isHariPenuh($row['tanggal'], $full_data, $kapasitas_harian);
+        $tgl_fmt    = date('d F Y', strtotime($row['tanggal']));
+        $status     = (int)$row['status'];
     ?>
       <div class="booking-item">
         <div class="item-header">
           <span class="no">#<?= str_pad($row['id_booking'], 5, '0', STR_PAD_LEFT) ?></span>
-          <span class="tgl"><?= date('d F Y', strtotime($row['tanggal'])) ?> · <?= date('H:i', strtotime($row['jam'])) ?> WIB</span>
+          <span class="tgl"><?= $tgl_fmt ?> · <?= date('H:i', strtotime($row['jam'])) ?> WIB</span>
         </div>
         <div class="item-body">
 
-          <?php if ($row['status'] === 'konfirmasi'): ?>
-          <div class="notif-konfirm">
-            ✓ Booking Anda telah dikonfirmasi! Silakan selesaikan pembayaran.
-          </div>
+          <?php if ($hari_penuh && !in_array($status, [2, 3])): ?>
+            <div class="notif-penuh">
+              <div class="icon">🚫</div>
+              <div class="teks">
+                <div class="judul">Hari Penuh!</div>
+                <div class="sub">
+                  Kuota rafting pada <strong><?= $tgl_fmt ?></strong> sudah penuh.<br>
+                  Silakan pilih tanggal lain — data booking kamu akan tetap tersimpan.
+                </div>
+                <a href="reschedule.php?id=<?= $row['id_booking'] ?>" class="btn-ganti">
+                  📅 Ganti Tanggal
+                </a>
+              </div>
+            </div>
+          <?php endif; ?>
+
+          <?php if ($status == 1 && !$hari_penuh): ?>
+            <div class="notif-konfirm" style="background:#fff3cd;border-color:#ffc107;color:#856404;">
+              💳 Booking Anda telah diterima! Mohon segera lakukan pembayaran.
+            </div>
           <?php endif; ?>
 
           <div class="item-grid">
@@ -192,33 +251,30 @@ function badgeLabel($s) {
             <div class="item-info">
               <div class="lbl">Status</div>
               <div class="val">
-                <span class="status-inline" style="<?= badgeStyle($row['status']) ?>">
-                  <?= badgeLabel($row['status']) ?>
+                <span class="status-inline" style="<?= badgeStyle($status) ?>">
+                  <?= badgeLabel($status) ?>
                 </span>
               </div>
             </div>
           </div>
 
-          <?php if ($row['status'] === 'batal' && !empty($row['alasan_batal'])): ?>
+          <?php if ($status == 3 && !empty($row['alasan_batal'])): ?>
             <div class="alasan-box">
               <strong>Alasan:</strong> <?= htmlspecialchars($row['alasan_batal']) ?>
             </div>
           <?php endif; ?>
 
-          <?php if ($row['status'] == '1'): ?>
-<div class="notif-konfirm" style="background:#fff3cd;border-color:#ffc107;color:#856404;">
-    💳 Booking Anda telah diterima! Mohon segera lakukan pembayaran.
-</div>
-<?php endif; ?>
           <div class="item-footer">
             <div class="total">Rp <?= number_format($row['total_harga'], 0, ',', '.') ?></div>
             <div class="btn-wrap">
-              <?php if ($row['status'] == '0'): ?>
+              <?php if ($status == 0): ?>
                 <a href="booking_tunggu.php?id=<?= $row['id_booking'] ?>" class="btn btn-cek">⏳ Cek Status</a>
-              <?php elseif ($row['status'] == '1'): ?>
+              <?php elseif ($status == 1 && !$hari_penuh): ?>
                 <a href="transaksi.php?id=<?= $row['id_booking'] ?>" class="btn btn-bayar">💳 Bayar Sekarang</a>
                 <a href="invoice.php?id=<?= $row['id_booking'] ?>" class="btn btn-invoice">🧾 Invoice</a>
-              <?php elseif ($row['status'] == '2'): ?>
+              <?php elseif ($status == 4): ?>
+                <a href="invoice.php?id=<?= $row['id_booking'] ?>" class="btn btn-invoice">🧾 Invoice</a>
+              <?php elseif ($status == 2): ?>
                 <a href="invoice.php?id=<?= $row['id_booking'] ?>" class="btn btn-invoice">🧾 Invoice</a>
               <?php endif; ?>
             </div>
