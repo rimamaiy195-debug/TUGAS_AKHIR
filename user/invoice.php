@@ -254,7 +254,7 @@ if ($data['status'] === 'batal') {
       </div>
 
       <div class="note-box">
-        📌 <strong>Catatan:</strong> Harap tiba 15 menit sebelum jadwal. Bawa pakaian ganti dan alas kaki yang tidak mudah lepas. Semua peralatan rafting sudah disediakan. Info: <strong>0812-XXXX-XXXX</strong>
+        📌 <strong>Catatan:</strong> Harap tiba 15 menit sebelum jadwal. Bawa pakaian ganti dan alas kaki yang tidak mudah lepas. Semua peralatan rafting sudah disediakan. Info: <strong>083102048865</strong>
       </div>
 
     </div>
