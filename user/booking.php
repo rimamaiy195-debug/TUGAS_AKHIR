@@ -217,6 +217,16 @@ $deskripsi = $deskripsi_default;
       .paket-banner-img2 { flex: 1; min-width: 140px; }
       .paket-info-boxes { flex: 1; min-width: 140px; }
     }
+    /* Hilangkan panah atas bawah input number */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type=number] {
+    -moz-appearance: textfield;
+}
   </style>
 </head>
 <body>
@@ -325,17 +335,33 @@ $deskripsi = $deskripsi_default;
           </tr>
 
           <!-- Jumlah Orang -->
-          <tr>
-            <td>Orang</td><td>:</td>
-            <td>
-              <div class="counter">
-                <button type="button" onclick="kurang()">−</button>
-                <span id="jumlah">1</span>
-                <button type="button" onclick="tambah()">+</button>
-              </div>
-              <input type="hidden" name="jumlah" id="input_jumlah" value="1">
-            </td>
-          </tr>
+<tr>
+  <td>Orang</td><td>:</td>
+  <td>
+    <div class="counter">
+      <button type="button" onclick="kurang()">−</button>
+
+      <input
+        type="number"
+        id="jumlah"
+        name="jumlah"
+        value="1"
+        min="1"
+        oninput="ubahJumlah(this.value)"
+        style="
+          width:70px;
+          text-align:center;
+          border:1.5px solid #ddd;
+          border-radius:6px;
+          padding:4px;
+          font-weight:700;
+        "
+      >
+
+      <button type="button" onclick="tambah()">+</button>
+    </div>
+  </td>
+</tr>
 
           <!-- No. Telepon -->
           <tr>
@@ -382,23 +408,41 @@ $deskripsi = $deskripsi_default;
 
 <script>
   // ── Counter orang ──────────────────────────────────────────────────
-  let jumlah = 1;
-  const harga = <?= (int)$paket['harga'] ?>;
+  // ── Counter orang ──────────────────────────────────────────────────
+let jumlah = 1;
+const harga = <?= (int)$paket['harga'] ?>;
 
-  function formatRupiah(angka) {
-    return 'Rp ' + angka.toLocaleString('id-ID');
+function formatRupiah(angka) {
+  return 'Rp ' + angka.toLocaleString('id-ID');
+}
+
+function updateCounter() {
+  document.getElementById('jumlah').value = jumlah;
+  document.getElementById('show_orang').textContent = jumlah;
+  document.getElementById('show_total').textContent = formatRupiah(jumlah * harga);
+}
+
+function tambah() {
+  jumlah++;
+  updateCounter();
+}
+
+function kurang() {
+  if (jumlah > 1) {
+    jumlah--;
+    updateCounter();
+  }
+}
+
+function ubahJumlah(nilai) {
+  jumlah = parseInt(nilai) || 1;
+
+  if (jumlah < 1) {
+    jumlah = 1;
   }
 
-  function updateCounter() {
-    document.getElementById('jumlah').textContent     = jumlah;
-    document.getElementById('input_jumlah').value     = jumlah;
-    document.getElementById('show_orang').textContent = jumlah;
-    document.getElementById('show_total').textContent = formatRupiah(jumlah * harga);
-  }
-
-  function tambah() { jumlah++; updateCounter(); }
-  function kurang() { if (jumlah > 1) { jumlah--; updateCounter(); } }
-
+  updateCounter();
+}
   // ── Listener tanggal (cuaca + kapasitas) ──────────────────────────
   document.getElementById('input_tanggal').addEventListener('change', function () {
     const tanggal   = this.value;
