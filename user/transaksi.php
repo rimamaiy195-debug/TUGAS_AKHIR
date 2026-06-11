@@ -3,7 +3,7 @@ include '../koneksi.php';
 include 'header.php';
 
 if (!isset($_SESSION['id_user'])) {
-    header('Location: login.php');
+    header('Location: ../login.php');
     exit;
 }
 
@@ -25,7 +25,6 @@ $ewalletInfo = [
     'LinkAja'   => ['nomor' => '0812-3456-7890', 'akun' => 'Rafting Singorojo'],
 ];
 
-/* ambil id booking */
 $id_booking = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 
 if (!$id_booking) {
@@ -41,7 +40,7 @@ if (!$id_booking) {
 
 // Ambil data booking
 $stmt = $koneksi->prepare("
-    SELECT b.*, p.nama_paket, j.tanggal, j.jam
+    SELECT b.*, p.nama_paket, j.tanggal, j.jam, j.jumlah
     FROM booking b
     JOIN paket p ON b.id_paket = p.id_paket
     JOIN jadwal j ON b.id_jadwal = j.id_jadwal
@@ -50,6 +49,7 @@ $stmt = $koneksi->prepare("
 $stmt->bind_param("ii", $id_booking, $_SESSION['id_user']);
 $stmt->execute();
 $booking = $stmt->get_result()->fetch_assoc();
+$stmt->close();
 
 if (!$booking) die('Booking tidak ditemukan.');
 if ($booking['status'] != 1) die('Booking belum dikonfirmasi oleh admin.');
@@ -59,16 +59,23 @@ $cek = $koneksi->prepare("SELECT * FROM pembayaran WHERE id_booking = ?");
 $cek->bind_param("i", $id_booking);
 $cek->execute();
 $pembayaran = $cek->get_result()->fetch_assoc();
+$cek->close();
 
 $error   = '';
 $success = false;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$pembayaran) {
     $metode       = trim($_POST['metode'] ?? '');
-    $namaPengirim = trim($_POST['nama_pengirim'] ?? '');
     $bankPengirim = trim($_POST['bank_pengirim'] ?? '');
     $ewalletPilih = trim($_POST['ewallet_pilihan'] ?? '');
     $nomorHp      = trim($_POST['nomor_hp'] ?? '');
+
+    // Ambil nama pengirim sesuai metode
+    if ($metode === 'ewallet') {
+        $namaPengirim = trim($_POST['nama_pengirim_ew'] ?? '');
+    } else {
+        $namaPengirim = trim($_POST['nama_pengirim'] ?? '');
+    }
 
     if (!$metode || !$namaPengirim) {
         $error = 'Semua field wajib diisi.';
@@ -76,8 +83,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$pembayaran) {
         $error = 'Pilih bank pengirim.';
     } elseif ($metode === 'ewallet' && (!$ewalletPilih || !$nomorHp)) {
         $error = 'Pilih e-wallet dan isi nomor HP.';
-    } elseif (empty($_FILES['bukti_transfer']['tmp_name'])) {
-        $error = 'Bukti pembayaran wajib diupload.';
+    } elseif (empty($_FILES['bukti_transfer']['tmp_name']) || $_FILES['bukti_transfer']['error'] !== UPLOAD_ERR_OK) {
+    $error = 'Bukti pembayaran wajib diupload.';
     } else {
         $file    = $_FILES['bukti_transfer'];
         $ext     = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
@@ -102,18 +109,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$pembayaran) {
                     ? $bankPengirim
                     : $ewalletPilih . ' (' . $nomorHp . ')';
 
-                // INSERT pakai MySQLi bind_param
                 $ins = $koneksi->prepare("
                     INSERT INTO pembayaran (id_booking, bank_pengirim, nama_pengirim, bukti_transfer, status_bayar)
                     VALUES (?, ?, ?, ?, 'menunggu')
                 ");
                 $ins->bind_param("isss", $id_booking, $infoPengirim, $namaPengirim, $fileName);
                 $ins->execute();
+                $ins->close();
 
-                // Update status booking jadi 2 (menunggu verifikasi pembayaran)
+                // Update status booking jadi 2
                 $upd = $koneksi->prepare("UPDATE booking SET status = 2 WHERE id_booking = ?");
                 $upd->bind_param("i", $id_booking);
                 $upd->execute();
+                $upd->close();
 
                 $success = true;
             }
@@ -129,19 +137,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$pembayaran) {
   <title>Pembayaran Booking · Rafting Singorojo</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    
-.wrap { 
-  max-width: 600px; 
-  width: 100%; 
-  margin: 2rem auto; 
-  padding: 0 1rem;
-}
-    .wrap { max-width: 520px; width: 100%; }
+    .wrap { max-width: 600px; width: 100%; margin: 2rem auto; padding: 0 1rem; }
     .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 1.25rem; }
     .brand-icon { width: 40px; height: 40px; background: #1565c0; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 20px; }
     .brand-name { font-size: 18px; font-weight: 500; color: #1a1a2e; }
     .brand-sub { font-size: 12px; color: #888; }
-    
     .section-label { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: #aaa; margin-bottom: 10px; }
     .card { background: #fff; border: 1px solid #e0eaff; border-radius: 14px; padding: 1.25rem; margin-bottom: 1rem; }
     .banner-ok { background: #e8f5e9; border: 1px solid #a5d6a7; border-radius: 10px; padding: 12px 16px; display: flex; align-items: flex-start; gap: 10px; margin-bottom: 1rem; }
@@ -153,16 +153,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$pembayaran) {
     .detail-key { color: #888; }
     .detail-val { font-weight: 500; color: #1a1a2e; }
     .detail-total { display: flex; justify-content: space-between; padding: 10px 0 0; }
-    .total-amount { font-family: 'DM Serif Display', serif; font-size: 22px; color: #1565c0; }
+    .total-amount { font-size: 22px; font-weight: 700; color: #1565c0; }
     .method-tabs { display: flex; gap: 8px; margin-bottom: 14px; }
-    .method-btn { flex: 1; padding: 10px 8px; border: 1px solid #e0eaff; border-radius: 8px; background: #f9f9f7; font-size: 13px; font-family: 'DM Sans', sans-serif; color: #888; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.15s; }
+    .method-btn { flex: 1; padding: 10px 8px; border: 1px solid #e0eaff; border-radius: 8px; background: #f9f9f7; font-size: 13px; color: #888; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.15s; }
     .method-btn.active { border: 2px solid #1565c0; background: #e8f0fe; color: #0c447c; font-weight: 500; }
     .rekening-box { background: #e8f0fe; border: 1px solid #90b8f5; border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 12px; }
     .rek-label { font-size: 11px; color: #3b6dc9; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 6px; }
     .rek-bank { font-size: 13px; color: #1a1a2e; margin-bottom: 2px; }
     .rek-norek { font-size: 20px; font-weight: 600; color: #0c447c; letter-spacing: 0.08em; display: flex; align-items: center; gap: 10px; margin-bottom: 2px; }
     .rek-atas { font-size: 13px; color: #3b6dc9; }
-    .copy-btn { font-size: 11px; background: #1565c0; color: #fff; border: none; border-radius: 5px; padding: 3px 10px; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+    .copy-btn { font-size: 11px; background: #1565c0; color: #fff; border: none; border-radius: 5px; padding: 3px 10px; cursor: pointer; }
     .ewallet-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 14px; }
     .ew-opt { border: 1px solid #e0eaff; border-radius: 8px; padding: 8px 4px; cursor: pointer; text-align: center; transition: all 0.15s; }
     .ew-opt:hover { border-color: #1565c0; background: #f0f7ff; }
@@ -174,7 +174,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$pembayaran) {
     .field-wrap { margin-bottom: 12px; }
     .field-label { font-size: 12px; font-weight: 500; color: #888; margin-bottom: 5px; display: block; }
     .field-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    input, select { width: 100%; padding: 10px 12px; border: 1px solid #e0eaff; border-radius: 8px; font-size: 14px; font-family: 'DM Sans', sans-serif; color: #1a1a2e; outline: none; background: #fff; }
+    input, select { width: 100%; padding: 10px 12px; border: 1px solid #e0eaff; border-radius: 8px; font-size: 14px; color: #1a1a2e; outline: none; background: #fff; }
     input:focus, select:focus { border-color: #1565c0; }
     input::placeholder { color: #ccc; }
     .upload-area { border: 1.5px dashed #90b8f5; border-radius: 10px; padding: 1.25rem; text-align: center; cursor: pointer; background: #f8fbff; }
@@ -182,15 +182,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$pembayaran) {
     .upload-text { font-size: 13px; color: #888; line-height: 1.5; }
     .upload-text strong { color: #1565c0; }
     .upload-preview { margin-top: 8px; font-size: 13px; color: #388e3c; display: none; }
-    .pay-btn { width: 100%; padding: 13px; border-radius: 8px; background: #1565c0; border: none; color: #fff; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500; cursor: pointer; margin-top: 4px; }
+    .pay-btn { width: 100%; padding: 13px; border-radius: 8px; background: #1565c0; border: none; color: #fff; font-size: 15px; font-weight: 500; cursor: pointer; margin-top: 4px; }
     .pay-btn:hover { opacity: 0.88; }
     .secure-note { text-align: center; font-size: 12px; color: #bbb; margin-top: 10px; }
     .error-box { background: #fff3f3; border: 1px solid #fcc; border-radius: 8px; padding: 10px 14px; font-size: 13px; color: #c0392b; margin-bottom: 12px; }
     .already-box { background: #fff8e1; border: 1px solid #ffe082; border-radius: 10px; padding: 12px 16px; font-size: 13px; color: #f57f17; }
     .success-card { text-align: center; padding: 2.5rem 1rem; }
     .success-icon { width: 64px; height: 64px; background: #e8f5e9; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-size: 30px; }
-    .success-title { font-family: 'DM Serif Display', serif; font-size: 24px; color: #1a1a2e; margin-bottom: 8px; }
+    .success-title { font-size: 24px; font-weight: 700; color: #1a1a2e; margin-bottom: 8px; }
     .success-sub { font-size: 14px; color: #888; line-height: 1.7; }
+    .btn-back { margin-top: 1rem; background: none; border: 1px solid #e8e8e8; border-radius: 8px; padding: 8px 20px; font-size: 13px; cursor: pointer; color: #1a1a2e; text-decoration: none; display: inline-block; }
   </style>
 </head>
 <body>
@@ -209,6 +210,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$pembayaran) {
     <div class="success-icon">✓</div>
     <p class="success-title">Bukti Terkirim!</p>
     <p class="success-sub">Bukti pembayaran kamu sudah kami terima.<br>Admin akan memverifikasi dalam 1×24 jam.<br>Siap-siap basah! 🌊</p>
+    <a href="cek_booking.php" class="btn-back">← Kembali ke Riwayat Booking</a>
   </div>
 
 <?php else: ?>
@@ -225,7 +227,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$pembayaran) {
     <p class="section-label">Detail booking</p>
     <div class="detail-row"><span class="detail-key">Paket</span><span class="detail-val"><?= htmlspecialchars($booking['nama_paket']) ?></span></div>
     <div class="detail-row"><span class="detail-key">Tanggal</span><span class="detail-val"><?= date('d/m/Y', strtotime($booking['tanggal'])) ?> · <?= htmlspecialchars($booking['jam']) ?></span></div>
-    <div class="detail-row"><span class="detail-key">Jumlah peserta</span><span class="detail-val"><?= $booking['jumlah_orang'] ?> orang</span></div>
+    <div class="detail-row"><span class="detail-key">Jumlah peserta</span><span class="detail-val"><?= $booking['jumlah'] ?> orang</span></div>
     <div class="detail-total">
       <span style="font-size:15px;font-weight:500;">Total pembayaran</span>
       <span class="total-amount">Rp <?= number_format($booking['total_harga'], 0, ',', '.') ?></span>
@@ -312,7 +314,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$pembayaran) {
           </div>
           <div class="field-wrap">
             <label class="field-label">Nama pengirim</label>
-            <input type="text" name="nama_pengirim" placeholder="Nama di e-wallet kamu" value="<?= htmlspecialchars($_POST['nama_pengirim'] ?? '') ?>">
+            <!-- Nama field diganti nama_pengirim_ew supaya tidak duplikat dengan transfer -->
+            <input type="text" name="nama_pengirim_ew" placeholder="Nama di e-wallet kamu" value="<?= htmlspecialchars($_POST['nama_pengirim_ew'] ?? '') ?>">
           </div>
           <div class="field-wrap">
             <label class="field-label">Screenshot bukti transfer</label>
@@ -368,6 +371,17 @@ function previewFile(input, id) {
     p.textContent   = '✓ ' + input.files[0].name;
   }
 }
+// Sebelum submit, disable input file yang tidak aktif
+document.querySelector('form').addEventListener('submit', function() {
+    const metode = document.getElementById('input-metode').value;
+    if (metode === 'transfer') {
+        const fileEw = document.getElementById('file-ew');
+        fileEw.disabled = true;
+    } else {
+        const fileInp = document.getElementById('file-inp');
+        fileInp.disabled = true;
+    }
+});
 </script>
 </body>
 </html>
