@@ -24,12 +24,12 @@ $booking = $stmt->get_result()->fetch_assoc();
 $stmt->close();
 
 if (!$booking) {
-    header("Location: riwayat.php"); exit;
+    header("Location: cek_booking.php"); exit;
 }
 
 /* Hanya boleh reschedule kalau belum Selesai/Dibatalkan */
 if (in_array((int)$booking['status'], [2, 3])) {
-    header("Location: riwayat.php"); exit;
+    header("Location: cek_booking.php"); exit;
 }
 
 /* Hitung jadwal yang FULL */
@@ -109,6 +109,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $tgl_lama_fmt = date('d F Y', strtotime($booking['tanggal']));
+
+/* ---- tidak pakai API key, pakai cek_cuaca.php ---- */
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -227,12 +229,67 @@ $tgl_lama_fmt = date('d F Y', strtotime($booking['tanggal']));
     .chip:hover { opacity: .8; }
     .chip-open { background: #d1fae5; color: #065f46; }
     .chip-full { background: #fee2e2; color: #991b1b; cursor: not-allowed; }
+
+    /* Cuaca */
+    .cuaca-wrap {
+      margin-top: 18px; border-radius: 12px; overflow: hidden;
+      border: 1.5px solid #e2e8f0;
+    }
+    .cuaca-header {
+      background: #0ea5e9; color: white;
+      padding: 10px 14px; font-size: 12px; font-weight: 700;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .cuaca-body {
+      padding: 14px; background: #f0f9ff;
+      min-height: 60px; display: flex; align-items: center;
+      justify-content: center;
+    }
+    .cuaca-loading { color: #94a3b8; font-size: 12px; font-style: italic; }
+    .cuaca-error   { color: #ef4444; font-size: 12px; font-weight: 600; }
+
+    .cuaca-result {
+      display: flex; align-items: center; gap: 14px; width: 100%;
+    }
+    .cuaca-icon { font-size: 2.4rem; flex-shrink: 0; }
+    .cuaca-info { flex: 1; }
+    .cuaca-desc {
+      font-size: 13px; font-weight: 700; color: #0c4a6e;
+      text-transform: capitalize; margin-bottom: 4px;
+    }
+    .cuaca-detail {
+      display: flex; flex-wrap: wrap; gap: 8px;
+    }
+    .cuaca-tag {
+      background: white; border: 1px solid #bae6fd;
+      border-radius: 20px; padding: 3px 10px;
+      font-size: 11px; font-weight: 600; color: #0369a1;
+    }
+    .cuaca-note {
+      font-size: 11px; color: #64748b; margin-top: 6px;
+      font-style: italic;
+    }
+
+    /* warning cuaca buruk */
+    .cuaca-warn {
+      margin-top: 8px; background: #fef2f2;
+      border: 1px solid #fecaca; border-radius: 8px;
+      padding: 8px 12px; font-size: 11px;
+      color: #991b1b; font-weight: 600;
+    }
+    /* cuaca oke */
+    .cuaca-ok {
+      margin-top: 8px; background: #f0fdf4;
+      border: 1px solid #bbf7d0; border-radius: 8px;
+      padding: 8px 12px; font-size: 11px;
+      color: #166534; font-weight: 600;
+    }
   </style>
 </head>
 <body>
 
 <div class="wrapper">
-  <a href="riwayat.php" class="back-link">← Kembali ke Riwayat</a>
+  <a href="cek_booking.php" class="back-link">← Kembali ke Riwayat</a>
 
   <div class="card">
     <div class="card-header">
@@ -300,6 +357,16 @@ $tgl_lama_fmt = date('d F Y', strtotime($booking['tanggal']));
         </div>
         <?php endif; ?>
 
+        <!-- CUACA -->
+        <div class="cuaca-wrap" id="cuacaWrap" style="display:none">
+          <div class="cuaca-header">
+            🌤️ Prakiraan Cuaca di Tanggal Ini
+          </div>
+          <div class="cuaca-body" id="cuacaBody">
+            <span class="cuaca-loading">Mengambil data cuaca...</span>
+          </div>
+        </div>
+
         <br>
         <button type="submit" class="btn-submit">Simpan Tanggal Baru</button>
       </form>
@@ -320,14 +387,72 @@ $tgl_lama_fmt = date('d F Y', strtotime($booking['tanggal']));
 const fullDates = <?php echo json_encode(array_values(array_filter($full_dates ?? [], fn($d) => $d >= date('Y-m-d')))); ?>;
 const tglLama   = '<?= $booking['tanggal'] ?>';
 
+// Rekomendasi berdasarkan status cuaca dari cek_cuaca.php
+function rekomendasiCuaca(status) {
+    const map = {
+        'Cerah'         : { ok: true,  pesan: 'Cuaca cerah! Kondisi terbaik untuk rafting hari ini.' },
+        'Berawan'       : { ok: true,  pesan: 'Mendung sebagian — cuaca cukup stabil untuk rafting.' },
+        'Berkabut'      : { ok: true,  pesan: 'Berkabut — waspadai jarak pandang di sungai.' },
+        'Hujan'         : { ok: false, pesan: 'Hujan diprakirakan — pertimbangkan untuk memilih tanggal lain.' },
+        'Hujan Deras'   : { ok: false, pesan: 'Hujan deras — rafting berisiko tinggi, tidak direkomendasikan.' },
+        'Badai Petir'   : { ok: false, pesan: 'Potensi badai petir — rafting tidak direkomendasikan!' },
+        'Salju/Hujan Es': { ok: false, pesan: 'Kondisi ekstrem — tidak disarankan.' },
+    };
+    return map[status] ?? { ok: true, pesan: 'Cek kondisi lapangan sebelum berangkat.' };
+}
+
+async function cekCuaca(tanggal) {
+    const wrap = document.getElementById('cuacaWrap');
+    const body = document.getElementById('cuacaBody');
+    wrap.style.display = 'block';
+    body.innerHTML = '<span class="cuaca-loading">⏳ Mengambil data cuaca...</span>';
+
+    try {
+        const res  = await fetch(`cek_cuaca.php?tanggal=${tanggal}`);
+        const data = await res.json();
+
+        if (!data.forecast) {
+            body.innerHTML = `<span class="cuaca-error">⚠️ ${data.error}</span>`;
+            return;
+        }
+
+        const rek     = rekomendasiCuaca(data.status);
+        const tgl_fmt = new Date(tanggal + 'T00:00:00').toLocaleDateString('id-ID', {
+            weekday:'long', day:'numeric', month:'long', year:'numeric'
+        });
+
+        body.innerHTML = `
+          <div class="cuaca-result">
+            <div class="cuaca-icon">${data.icon}</div>
+            <div class="cuaca-info">
+              <div class="cuaca-desc" style="color:${data.teks}">${data.status}</div>
+              <div class="cuaca-detail">
+                <span class="cuaca-tag">🌡️ ${data.min}°C – ${data.max}°C</span>
+                <span class="cuaca-tag">Kode WMO: ${data.kode}</span>
+              </div>
+              <div class="${rek.ok ? 'cuaca-ok' : 'cuaca-warn'}">
+                ${rek.ok ? '✅' : '⚠️'} ${rek.pesan}
+              </div>
+              <div class="cuaca-note">Prakiraan untuk ${tgl_fmt} · Sumber: Open-Meteo</div>
+            </div>
+          </div>`;
+    } catch (e) {
+        body.innerHTML = `<span class="cuaca-error">❌ Gagal mengambil data cuaca. Cek koneksi internet.</span>`;
+    }
+}
+
 document.getElementById('tanggal_baru').addEventListener('change', function () {
     const val = this.value;
     if (fullDates.includes(val)) {
         alert('Tanggal ' + val + ' sudah penuh! Silakan pilih tanggal lain.');
         this.value = '';
+        document.getElementById('cuacaWrap').style.display = 'none';
     } else if (val === tglLama) {
         alert('Tanggal yang dipilih sama dengan tanggal sebelumnya.');
         this.value = '';
+        document.getElementById('cuacaWrap').style.display = 'none';
+    } else if (val) {
+        cekCuaca(val);
     }
 });
 </script>
