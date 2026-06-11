@@ -183,6 +183,15 @@ $deskripsi = $deskripsi_default;
     }
     .counter button:hover { background: #2daae1; color: white; border-color: #2daae1; }
     .counter span { font-weight: 700; font-size: 15px; min-width: 20px; text-align: center; }
+    .counter input {
+      width: 70px;
+      height: 30px;
+      text-align: center;
+      border: 1.5px solid #ddd;
+      border-radius: 6px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+    }
 
     .divider { border: none; border-top: 1.5px solid #eee; margin: 10px 0; }
 
@@ -343,11 +352,12 @@ input[type=number] {
 
       <input
         type="number"
-        id="jumlah"
+        id="input_jumlah"
         name="jumlah"
         value="1"
         min="1"
-        oninput="ubahJumlah(this.value)"
+        max="50"
+        oninput="updateJumlah()"
         style="
           width:70px;
           text-align:center;
@@ -382,7 +392,7 @@ input[type=number] {
         </div>
         <div class="info-row">
           <span>Jumlah Orang</span>
-          <span><span id="show_orang">1</span> orang</span>
+          <span id="show_orang">1</span>
         </div>
 
         <hr class="divider">
@@ -408,41 +418,49 @@ input[type=number] {
 
 <script>
   // ── Counter orang ──────────────────────────────────────────────────
-  // ── Counter orang ──────────────────────────────────────────────────
-let jumlah = 1;
-const harga = <?= (int)$paket['harga'] ?>;
+  const harga = <?= (int)$paket['harga'] ?>;
+  const MAX_ORANG = 50;
 
-function formatRupiah(angka) {
-  return 'Rp ' + angka.toLocaleString('id-ID');
-}
-
-function updateCounter() {
-  document.getElementById('jumlah').value = jumlah;
-  document.getElementById('show_orang').textContent = jumlah;
-  document.getElementById('show_total').textContent = formatRupiah(jumlah * harga);
-}
-
-function tambah() {
-  jumlah++;
-  updateCounter();
-}
-
-function kurang() {
-  if (jumlah > 1) {
-    jumlah--;
-    updateCounter();
-  }
-}
-
-function ubahJumlah(nilai) {
-  jumlah = parseInt(nilai) || 1;
-
-  if (jumlah < 1) {
-    jumlah = 1;
+  function formatRupiah(angka) {
+    return 'Rp ' + angka.toLocaleString('id-ID');
   }
 
-  updateCounter();
-}
+  function updateJumlah() {
+    let input = document.getElementById('input_jumlah');
+    let jumlah = parseInt(input.value) || 1;
+
+    if (jumlah < 1) jumlah = 1;
+    if (jumlah > MAX_ORANG) jumlah = MAX_ORANG;
+
+    input.value = jumlah;
+
+    document.getElementById('show_orang').textContent = jumlah;
+    document.getElementById('show_total').textContent =
+      formatRupiah(jumlah * harga);
+  }
+
+  function tambah() {
+    let input = document.getElementById('input_jumlah');
+    let jumlah = parseInt(input.value) || 1;
+
+    if (jumlah < MAX_ORANG) {
+      input.value = jumlah + 1;
+      updateJumlah();
+    }
+  }
+
+  function kurang() {
+    let input = document.getElementById('input_jumlah');
+    let jumlah = parseInt(input.value) || 1;
+
+    if (jumlah > 1) {
+      input.value = jumlah - 1;
+      updateJumlah();
+    }
+  }
+
+  updateJumlah();
+
   // ── Listener tanggal (cuaca + kapasitas) ──────────────────────────
   document.getElementById('input_tanggal').addEventListener('change', function () {
     const tanggal   = this.value;
