@@ -31,6 +31,7 @@ include 'header.php'
     overflow-x: hidden;
   }
 
+  /* HERO */
   .hero {
     min-height: 92vh;
     background: linear-gradient(150deg, var(--river-deep) 0%, var(--river) 55%, #1e6b8a 100%);
@@ -132,6 +133,7 @@ include 'header.php'
     margin-top: 5px;
   }
 
+  /* ABOUT */
   .about {
     padding: 80px 60px;
     max-width: 1200px;
@@ -373,6 +375,104 @@ include 'header.php'
   .fac-title { font-weight: 700; color: var(--river); font-size: 0.9rem; margin-bottom: 4px; }
   .fac-sub { font-size: 0.82rem; color: var(--muted); }
 
+  /* SPONSORS */
+  .sponsors {
+    padding: 70px 60px;
+    background: var(--cream);
+    text-align: center;
+  }
+  .sponsors-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .sponsors .section-label { justify-content: center; }
+  .sponsors h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.9rem;
+    color: var(--river-deep);
+    margin-bottom: 8px;
+  }
+  .sponsors .underline { margin-left: auto; margin-right: auto; }
+  .sponsors-sub {
+    color: var(--muted);
+    font-size: 0.95rem;
+    max-width: 560px;
+    margin: 0 auto 40px;
+    line-height: 1.7;
+  }
+
+  .sponsor-grid {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 18px;
+    margin-bottom: 40px;
+  }
+  .sponsor-slot {
+    background: #fff;
+    border: 1px dashed #cddce6;
+    border-radius: 10px;
+    width: 200px;
+    aspect-ratio: 16/9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    box-shadow: 0 2px 10px rgba(13,46,69,0.04);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .sponsor-slot:hover { transform: translateY(-3px); box-shadow: 0 8px 22px rgba(13,46,69,0.1); }
+  .sponsor-slot img { max-width: 100%; max-height: 100%; object-fit: contain; }
+  .sponsor-slot .placeholder {
+    color: #a9bac6;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-align: center;
+    line-height: 1.4;
+  }
+
+  .sponsor-cta {
+    background: var(--river-deep);
+    border-radius: 12px;
+    padding: 30px 36px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+    text-align: left;
+  }
+  .sponsor-cta-text h3 {
+    font-family: 'Playfair Display', serif;
+    color: #fff;
+    font-size: 1.15rem;
+    margin-bottom: 6px;
+  }
+  .sponsor-cta-text p {
+    color: rgba(255,255,255,0.65);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    max-width: 480px;
+  }
+  .btn-sponsor {
+    display: inline-block;
+    background: var(--gold);
+    color: #fff;
+    padding: 12px 28px;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .btn-sponsor:hover { background: #b8832e; transform: translateY(-2px); }
+
+  @media (max-width: 900px) {
+    .sponsor-slot { width: 42%; }
+  }
+
   footer {
     background: #07192a;
     color: rgba(255,255,255,0.4);
@@ -530,6 +630,20 @@ include 'header.php'
       </div>
     </div>
   </div>
+</section>
+
+<section class="sponsors">
+  <div class="sponsors-inner reveal">
+    <div class="section-label">Bekerja Sama Dengan</div>
+    <h2>Our Partner</h2>
+    <div class="underline"></div>
+    <p class="sponsors-sub">Terima kasih kepada mitra kami yang mendukung pengembangan wisata Rafting Singorojo.</p>
+
+    <div class="sponsor-grid">
+      <div class="sponsor-slot"><img src="../images/partner1.jpg"></div>
+      <div class="sponsor-slot"><img src="../images/partner2.jpg"></div>
+      <div class="sponsor-slot"><img src="../images/partner3.jpg"></div>
+    </div>
 </section>
 
 <footer>
