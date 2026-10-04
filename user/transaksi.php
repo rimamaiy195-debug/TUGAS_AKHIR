@@ -138,7 +138,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$pembayaran) {
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     .wrap { max-width: 600px; width: 100%; margin: 2rem auto; padding: 0 1rem; }
-    .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 1.25rem; }
+    .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
+    .btn-topback { display: inline-flex; align-items: center; gap: 6px; background: #fff; border: 1px solid #e0eaff; border-radius: 8px; padding: 7px 14px; font-size: 13px; color: #555; text-decoration: none; cursor: pointer; transition: all 0.15s; }
+    .btn-topback:hover { border-color: #1565c0; color: #1565c0; background: #f0f7ff; }
+    .brand { display: flex; align-items: center; gap: 10px; }
     .brand-icon { width: 40px; height: 40px; background: #1565c0; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 20px; }
     .brand-name { font-size: 18px; font-weight: 500; color: #1a1a2e; }
     .brand-sub { font-size: 12px; color: #888; }
@@ -197,12 +200,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$pembayaran) {
 <body>
 <div class="wrap">
 
-  <div class="brand">
-    <div class="brand-icon">🚣</div>
-    <div>
-      <div class="brand-name">Rafting Singorojo</div>
-      <div class="brand-sub">Konfirmasi Pembayaran</div>
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand-icon">🚣</div>
+      <div>
+        <div class="brand-name">Rafting Singorojo</div>
+        <div class="brand-sub">Konfirmasi Pembayaran</div>
+      </div>
     </div>
+    <?php if (!$success): ?>
+      <a href="cek_booking.php" class="btn-topback">← Kembali</a>
+    <?php endif; ?>
   </div>
 
 <?php if ($success): ?>
