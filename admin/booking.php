@@ -1,5 +1,167 @@
 <?php
 include '../koneksi.php';
+
+/* ===== TAMPILKAN BUKTI TRANSFER ===== */
+if (isset($_GET['lihat_bukti'])) {
+    $id_bukti = (int) $_GET['lihat_bukti'];
+
+    $q_bukti = mysqli_query($koneksi, "
+        SELECT bukti_transfer
+        FROM pembayaran
+        WHERE id_booking = $id_bukti
+        LIMIT 1
+    ");
+
+    if ($q_bukti && mysqli_num_rows($q_bukti) > 0) {
+        $data_bukti = mysqli_fetch_assoc($q_bukti);
+        $nama_file = basename($data_bukti['bukti_transfer']);
+        $file_path = __DIR__ . '/../user/uploads/' . $nama_file;
+
+        if ($nama_file !== '' && is_file($file_path)) {
+            $ext = strtolower(pathinfo($file_path, PATHINFO_EXTENSION));
+            $url_file = '../user/uploads/' . rawurlencode($nama_file);
+
+            if ($ext === 'pdf') {
+                $tampilan_file = '<iframe src="' . htmlspecialchars($url_file, ENT_QUOTES) . '" class="bukti-pdf"></iframe>';
+            } elseif (in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp'], true)) {
+                $tampilan_file = '<img src="' . htmlspecialchars($url_file, ENT_QUOTES) . '" class="bukti-img" alt="Bukti Transfer">';
+            } else {
+                $tampilan_file = '<div class="bukti-error">Format file bukti tidak dapat ditampilkan.</div>';
+            }
+
+            ?>
+            <!DOCTYPE html>
+            <html lang="id">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Bukti Transfer - Rafting Singorojo</title>
+                <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+                <style>
+                    * { box-sizing: border-box; }
+                    body {
+                        margin: 0;
+                        min-height: 100vh;
+                        background: #f1f5f9;
+                        font-family: 'Poppins', sans-serif;
+                        display: flex;
+                        flex-direction: column;
+                    }
+                    .bukti-header {
+                        height: 70px;
+                        background: #0d4f6c;
+                        color: #fff;
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                        padding: 0 28px;
+                        box-shadow: 0 2px 10px rgba(0,0,0,.12);
+                    }
+                    .bukti-title {
+                        font-size: 1rem;
+                        font-weight: 600;
+                    }
+                    .bukti-subtitle {
+                        font-size: .72rem;
+                        opacity: .8;
+                        margin-top: 2px;
+                    }
+                    .btn-tutup {
+                        display: inline-flex;
+                        align-items: center;
+                        gap: 7px;
+                        padding: 9px 15px;
+                        border-radius: 8px;
+                        border: 1px solid rgba(255,255,255,.35);
+                        background: rgba(255,255,255,.12);
+                        color: #fff;
+                        text-decoration: none;
+                        font-family: 'Poppins', sans-serif;
+                        font-size: .78rem;
+                        font-weight: 600;
+                        transition: .2s;
+                    }
+                    .btn-tutup:hover {
+                        background: #fff;
+                        color: #0d4f6c;
+                    }
+                    .bukti-area {
+                        flex: 1;
+                        padding: 28px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        overflow: auto;
+                    }
+                    .bukti-card {
+                        width: min(100%, 1000px);
+                        min-height: 300px;
+                        background: #fff;
+                        border-radius: 16px;
+                        padding: 20px;
+                        box-shadow: 0 2px 12px rgba(0,0,0,.08);
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                    }
+                    .bukti-img {
+                        display: block;
+                        max-width: 100%;
+                        max-height: calc(100vh - 150px);
+                        width: auto;
+                        height: auto;
+                        object-fit: contain;
+                        border-radius: 8px;
+                    }
+                    .bukti-pdf {
+                        width: 100%;
+                        height: calc(100vh - 150px);
+                        min-height: 600px;
+                        border: none;
+                        border-radius: 8px;
+                    }
+                    .bukti-error {
+                        color: #991b1b;
+                        background: #fee2e2;
+                        padding: 14px 18px;
+                        border-radius: 8px;
+                        font-size: .85rem;
+                    }
+                    @media (max-width: 600px) {
+                        .bukti-header { padding: 0 15px; }
+                        .bukti-area { padding: 15px; }
+                        .bukti-subtitle { display: none; }
+                        .btn-tutup { padding: 8px 11px; }
+                        .bukti-card { padding: 10px; }
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="bukti-header">
+                    <div>
+                        <div class="bukti-title">Bukti Transfer</div>
+                        <div class="bukti-subtitle">Bukti pembayaran pelanggan</div>
+                    </div>
+                    <a href="booking.php" class="btn-tutup">✕ Tutup Bukti</a>
+                </div>
+
+                <div class="bukti-area">
+                    <div class="bukti-card">
+                        <?= $tampilan_file ?>
+                    </div>
+                </div>
+            </body>
+            </html>
+            <?php
+            exit;
+        }
+    }
+
+    http_response_code(404);
+    echo 'Bukti transfer tidak ditemukan.';
+    exit;
+}
+
 include 'header.php';
 
 $query = mysqli_query($koneksi, "
@@ -9,11 +171,13 @@ $query = mysqli_query($koneksi, "
         u.nama       AS nama,
         u.no_hp      AS hp,
         p.nama_paket AS paket,
-        j.tanggal    AS tgl
+        j.tanggal    AS tgl,
+        py.bukti_transfer
     FROM booking b
     JOIN user   u ON b.id_user   = u.id_user
     JOIN paket  p ON b.id_paket  = p.id_paket
     JOIN jadwal j ON b.id_jadwal = j.id_jadwal
+    LEFT JOIN pembayaran py ON b.id_booking = py.id_booking
     ORDER BY j.tanggal ASC, b.id_booking DESC
 ");
 
@@ -26,6 +190,7 @@ while ($row = mysqli_fetch_assoc($query)) {
         'tgl'    => $row['tgl'],
         'paket'  => $row['paket'],
         'status' => (int)$row['status'],
+        'bukti'  => $row['bukti_transfer'],
     ];
 }
 
@@ -220,6 +385,8 @@ while ($r = mysqli_fetch_assoc($cek_full)) {
   .btn-lunas   { background: #ede9fe !important; color: #5b21b6 !important; }
   .btn-done    { background: #e0e7ff !important; color: #3730a3 !important; }
   .btn-cancel  { background: #fee2e2 !important; color: #991b1b !important; }
+  .btn-proof   { background: #dbeafe !important; color: #1d4ed8 !important; }
+  .btn-proof:hover { background: #bfdbfe !important; }
 
   .empty-row td { text-align: center !important; padding: 40px !important; color: #94a3b8 !important; font-size: .85rem !important; }
 
@@ -499,12 +666,17 @@ function renderTable() {
                         ${showBayar   ? `<button class="btn-act btn-lunas"   onclick="changeStatus(${b.id},4)">💰 Lunas</button>` : ''}
                         ${showSelesai ? `<button class="btn-act btn-done"    onclick="changeStatus(${b.id},2)">🏁 Selesai</button>` : ''}
                         ${showBatal   ? `<button class="btn-act btn-cancel"  onclick="changeStatus(${b.id},3)">✖ Batal</button>` : ''}
+                        ${b.bukti ? `<button class="btn-act btn-proof" onclick="lihatBukti(${b.id})">📄 Lihat Bukti</button>` : ''}
                     </div>
                 </td>
             </tr>`;
         }).join('');
 
     updateStats();
+}
+
+function lihatBukti(idBooking) {
+    window.location.href = 'booking.php?lihat_bukti=' + idBooking;
 }
 
 function setFilter(f, el) {
